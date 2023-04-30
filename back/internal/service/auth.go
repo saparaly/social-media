@@ -72,9 +72,16 @@ func (s *AuthService) CheckUser(user models.User) (models.User, error) {
 	}
 	// check if user exists
 	usr, err := s.repo.GetUserByUsername(user.Username)
-	fmt.Println(err)
 	if err != nil {
 		return models.User{}, errors.New("username does not exists")
+	}
+
+	// check password
+	// fmt.Println(user.Password)
+	// fmt.Println(usr.Email)
+	// usr.Email is user password idk they are messed up
+	if user.Password != usr.Email {
+		return models.User{}, errors.New("incorrect password")
 	}
 	return usr, nil
 }

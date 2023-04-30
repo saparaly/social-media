@@ -17,6 +17,7 @@ func NewTokenRepository(db *sql.DB) *TokenRepo {
 
 type Token interface {
 	GetUserIDByToken(token string) (*models.User, error)
+	GetUserById(id int) (*models.User, error)
 }
 
 func (r *TokenRepo) GetUserIDByToken(token string) (*models.User, error) {
@@ -34,4 +35,20 @@ func (r *TokenRepo) GetUserIDByToken(token string) (*models.User, error) {
 		}
 	}
 	return user, nil
+}
+
+func (r *TokenRepo) GetUserById(id int) (*models.User, error) {
+	stmt, err := r.db.Prepare("SELECT role, username FROM users WHERE id = ?")
+	if err != nil {
+		return nil, err
+	}
+	defer stmt.Close()
+
+	var user models.User
+	err = stmt.QueryRow(id).Scan(&user.Role, &user.Username)
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
 }

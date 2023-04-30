@@ -18,10 +18,9 @@ func NewRepository(db *sql.DB) *Repository {
 		Authorization: NewAuthRepository(db),
 		Post:          NewPostRepository(db),
 		Token:         NewTokenRepository(db),
+		Comment:       NewCommentRepository(db),
 	}
 }
-
-type Comment interface{}
 
 type Reaction interface{}
 

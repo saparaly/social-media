@@ -15,7 +15,6 @@
                 <div class="edit" @click="deletePost">
                   <svg width="800px" height="800px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.16565 10.1534C5.07629 8.99181 5.99473 8 7.15975 8H16.8402C18.0053 8 18.9237 8.9918 18.8344 10.1534L18.142 19.1534C18.0619 20.1954 17.193 21 16.1479 21H7.85206C6.80699 21 5.93811 20.1954 5.85795 19.1534L5.16565 10.1534Z" stroke="#000000" stroke-width="2"/><path d="M19.5 5H4.5" stroke="#000000" stroke-width="2" stroke-linecap="round"/><path d="M10 3C10 2.44772 10.4477 2 11 2H13C13.5523 2 14 2.44772 14 3V5H10V3Z" stroke="#000000" stroke-width="2"/></svg>
                 </div>
-                <p>{{ post.role }}</p>
               </div>
             </div>
           </div>
@@ -38,7 +37,7 @@
               {{ tag }}
             </span>
           </div>
-          <div class="username">created by role(student) @{{ post.userId }}(username)</div>
+          <div class="username">created by <span>{{postuserrole}}</span> @{{ usernamepost }}</div>
 
           <div class="reaction">
             <div class="react">
@@ -52,11 +51,11 @@
             <div class="react">
               <form action="">
                 <input type="text" value="dislike" name="reaction" hidden>
-                <button>
+                <button @click.prevent="dislikePost">
                   <svg fill="#000000" height="800px" width="800px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 58.036 58.036" xml:space="preserve"><g><g><path d="M53,45.518v-16.5c0-10.201-8.301-18.5-18.505-18.5H23.505C13.301,10.518,5,18.817,5,29.018v16.5H0v2h6h46h6.036v-2H53z     M7,45.518v-16.5c0-9.098,7.404-16.5,16.505-16.5h10.989c9.101,0,16.505,7.402,16.505,16.5v16.5H7z"/><polygon points="12,33.518 21,33.518 21,36.518 23,36.518 23,33.518 24,33.518 24,31.518 12,31.518   "/><polygon points="34,33.518 43,33.518 43,36.518 45,36.518 45,33.518 46,33.518 46,31.518 34,31.518   "/></g></g></svg>
                 </button>
               </form>
-              12
+              {{dislikes}}
             </div>
             <div class="react">
               <form action="">
@@ -66,7 +65,7 @@
                   <svg fill="#000000" width="800px" height="800px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg"><title>comment-right</title><path d="M30.535 28.373c-1.809-1.73-3.119-3.968-3.7-6.485l-0.017-0.088c1.782-1.921 2.888-4.489 2.932-7.315l0-0.009c0-6.686-6.393-12.124-14.25-12.124s-14.25 5.438-14.25 12.124 6.393 12.125 14.25 12.125c0.004 0 0.009 0 0.014 0 1.883 0 3.691-0.319 5.374-0.906l-0.114 0.035c2.528 1.962 5.604 3.343 8.96 3.887l0.115 0.015c0.046 0.010 0.098 0.015 0.152 0.016h0c0.414-0 0.75-0.336 0.75-0.75 0-0.205-0.082-0.39-0.215-0.526l0 0zM21.426 24.348c-0.010-0.009-0.025-0.004-0.035-0.013-0.128-0.11-0.296-0.177-0.479-0.177h-0c-0.022 0-0.039 0.007-0.061 0.009-0.070 0.001-0.137 0.011-0.2 0.030l0.005-0.001c-1.516 0.574-3.269 0.906-5.099 0.906-0.020 0-0.040-0-0.060-0h0.003c-7.030 0-12.75-4.766-12.75-10.625s5.72-10.624 12.75-10.624c7.031 0 12.75 4.766 12.75 10.624-0.024 2.593-1.087 4.934-2.791 6.63l-0 0-0.010 0.026c-0.111 0.124-0.18 0.288-0.183 0.468v0.001c-0.001 0.015-0.002 0.033-0.002 0.050 0 0.007 0 0.014 0 0.022l-0-0.001c-0.002 0.017-0.002 0.037-0.002 0.058 0 0.008 0 0.016 0 0.024l-0-0.001c0.415 2.246 1.34 4.227 2.652 5.887l-0.021-0.028c-2.496-0.614-4.669-1.747-6.49-3.285l0.024 0.019z"/></svg>
                 </button>
               </form>
-              10
+              {{ comments.length }}
             </div>
           </div>
 
@@ -85,6 +84,23 @@
             <RouterLink to="/">ok</RouterLink>
           </div>
 
+          <div class="create-comment">
+            <form>
+              <textarea v-model="commentContent" name="text" cols="30" rows="10" placeholder="Write your comment here"></textarea>
+              <button @click.prevent="createComment">Post Comment</button>
+            </form>
+          </div>
+          <div class="comments">
+            <div v-for="comment in comments" :key="comment.id" class="comment">
+              {{ comment.id }}
+              <div class="username">commented by <span>{{ comment.commentuserrole}}</span> @{{ comment.commentusername}}</div>
+              <p class="text">{{ comment.text }}</p>
+              <div class="reactions-to-comment">
+                <button @click.prevent="likeComment(comment.id)" class="like-btn">{{ comment.like }} 👍</button>
+                <button @click.prevent="dislikeComment(comment.id)" class="dislike-btn">{{ comment.dislike }} 👎</button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -99,6 +115,8 @@
         isLiked: false,
         isUser: false,
         post: {},
+        comments: {},
+        commentContent: '',
         errorMessage: '',
         isdeleted: false,
         edited: false,
@@ -110,22 +128,34 @@
         postid: null,
         userid: null,
         likes: null,
+        dislikes: null,
+        dislikeC: null,
+        likeC: null,
+        usernamepost: null,
+        postuserrole: null
       };
     },
     async mounted() {
       const postId = this.$route.params.id;
       try {
-        const response = await axios.get(`http://localhost:8000/post?id=${postId}`);
-        this.post = response.data;
-        // console.log(response.data.userId)
-        this.postid = response.data.id
-        this.userid = response.data.userId
-        this.title = response.data.title
-        this.description = response.data.description
-        this.location = response.data.location
-        this.date = response.data.date
-        this.likes = response.data.like
-        console.log(response.data, "test")
+        const postResponse = await axios.get(`http://localhost:8000/post?id=${postId}`);
+        const commentsResponse = await axios.get(`http://localhost:8000/comments?postId=${postId}`);
+        this.post = postResponse.data;
+        this.comments = commentsResponse.data;
+        // for post /************************************************************************ */
+        this.postid = postResponse.data.id
+        this.userid = postResponse.data.userId
+        this.title = postResponse.data.title
+        this.description = postResponse.data.description
+        this.location = postResponse.data.location
+        this.date = postResponse.data.date
+        this.likes = postResponse.data.like
+        this.dislikes = postResponse.data.dislike
+        this.usernamepost = postResponse.data.postusername
+        this.postuserrole = postResponse.data.postuserrole
+        // for comment /************************************************************************ */
+        // console.log(commentsResponse.data, " comment")
+        console.log(postResponse.data, " post")
       } catch (error) {
         console.log(error);
         this.errorMessage = "Error loading post";
@@ -208,6 +238,52 @@
           console.log(error)
         }
       },
+      async createComment() {
+        try { 
+          const response = await axios.post('http://localhost:8000/create-comment', {
+          Text: this.commentContent,
+          UserId: this.userid,
+          PostId: this.postid,
+        },{
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+        console.log(response.data.valid)
+        console.log(response.data)
+        if (response.status === 200 && response.data.valid) {
+          // this.$router.push(`/post/${response.data.postid}`)
+        } else{
+          this.errorMess = response.data.err
+        }
+      } catch (error) {
+        console.log(error)
+      }
+      },
+      async commentReaction(commentId, action) {
+        try {
+          const response = await axios.post('http://localhost:8000/comment-reaction', {
+            Id: commentId,
+            UserId: this.userid,
+            ReactionType: action,
+          },{
+            withCredentials: true,
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          })
+          // console.log(response.data)
+          // this.likePost = response.data.isliked
+          if (response.status === 200 && response.data.valid) {
+            
+          } else{
+            this.errorMess = response.data.err
+          }
+        } catch (error) {
+          console.log(error)
+        }
+      },
       edit() {
         this.edited = !this.edited
       },
@@ -220,11 +296,123 @@
       dislikePost() {
         this.postReaction('dislike')
       },
+      likeComment(commentId) {
+      this.commentReaction(commentId,'like')
+      },
+      dislikeComment(commentId) {
+        this.commentReaction(commentId,'dislike')
+      },
     }
   };
   </script>
 
 <style scoped>
+.comments {
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.comment {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 10px;
+  width: 100%;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.comment:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.username {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+.username span {
+  color: #8593bd;}
+.text {
+  font-size: 14px;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.reactions-to-comment {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100px;
+}
+
+.like-btn, .dislike-btn {
+  border: none;
+  background-color: transparent;
+  font-size: 14px;
+  cursor: pointer;
+  color: #888;
+  transition: transform 0.2s, color 0.2s;
+}
+
+.like-btn:hover, .dislike-btn:hover {
+  color: #555;
+  transform: scale(1.1);
+}
+
+/*  */
+.create-comment {
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.create-comment form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.create-comment textarea {
+  border: none;
+  padding: 15px;
+  background-color: #f5f5f5;
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  border-radius: 5px;
+  resize: none;
+  height: 150px;
+}
+
+.create-comment textarea:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #2196f3;
+}
+
+.create-comment button {
+  border: none;
+  background-color: #2196f3;
+  color: white;
+  padding: 10px 16px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.create-comment button:hover {
+  background-color: #1976d2;
+}
+
+/*  */
+
 .reaction{
   display: flex;
   align-items: center;
@@ -344,11 +532,13 @@ input, textarea {
 .img {
   width: 100%;
   height: 400px;
+  border: 5px solid;
+
 }
 .img img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
 }
 .desc, .tags {
   margin-top: 20px;
@@ -363,6 +553,9 @@ input, textarea {
   background: #8593bd;
   color: #0f2051;
   padding: 5px 10px;
+}
+.post {
+  margin-bottom: 100px;
 }
 </style>
   

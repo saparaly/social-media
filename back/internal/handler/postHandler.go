@@ -49,8 +49,13 @@ func (h *Handler) createPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	post.UserId = userId.Id
+	post.Username = userId.Username
+	post.UserRole = userId.Role
+
 	postId, err := h.services.CreatePost(*post)
 	if err != nil {
+		fmt.Println("maybe error  is here")
+
 		fmt.Println(err)
 		response := signUpResponse{
 			Valid: false,
@@ -61,7 +66,6 @@ func (h *Handler) createPost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	// w.Write([]byte(`{"valid": true}`))
 	response := signUpResponse{
 		Valid:  true,
 		PostId: postId,
@@ -81,6 +85,15 @@ func (h *Handler) getPost(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Credentials", "true")
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 
+	// get cookie
+	// cookie, err := r.Cookie("token")
+	// if err != nil {
+	// 	fmt.Println(err)
+	// 	w.WriteHeader(http.StatusUnauthorized)
+	// 	return
+	// }
+	// fmt.Println(cookie)
+	// postid
 	id, err := strconv.Atoi(r.URL.Query().Get("id"))
 	if err != nil {
 		fmt.Println(err)
@@ -90,6 +103,7 @@ func (h *Handler) getPost(w http.ResponseWriter, r *http.Request) {
 
 	post, err := h.services.GetPost(id)
 	if err != nil {
+		fmt.Println(err)
 		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}
@@ -178,7 +192,6 @@ func (h *Handler) updatePost(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	userId, err := h.GetUserByToken(w, r)
-	// fmt.Println("token problem")
 	if err != nil {
 		fmt.Println(err)
 		response := signUpResponse{
@@ -187,14 +200,12 @@ func (h *Handler) updatePost(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(response)
 		return
 	}
-	// fmt.Println("not token problem")
 
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
 		return
 	}
-	// fmt.Println("smth")
 
 	var post *models.Post
 	err = json.Unmarshal(body, &post)
@@ -203,10 +214,7 @@ func (h *Handler) updatePost(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid JSON data", http.StatusBadRequest)
 		return
 	}
-	// fmt.Println("is error here?")
 
-	// fmt.Println(userId.Id)
-	// fmt.Println(post.UserId)
 	if userId.Id != post.UserId {
 		response := signUpResponse{
 			IsUser: false,
@@ -214,7 +222,6 @@ func (h *Handler) updatePost(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(response)
 		return
 	}
-	// fmt.Println("no, how can i finf err")
 
 	err = h.services.UpdatePost(*post)
 	if err != nil {
@@ -226,8 +233,6 @@ func (h *Handler) updatePost(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(response)
 		return
 	}
-	// fmt.Println("post updated")
-	// fmt.Println(post)
 
 	w.WriteHeader(http.StatusOK)
 	response := signUpResponse{

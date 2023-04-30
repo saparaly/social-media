@@ -18,6 +18,11 @@ type Post struct {
 	Like         int        `json:"like"`
 	Dislike      int        `json:"dislike"`
 	ReactionType string     `json:"ReactionType"`
+	/**/
+	Username string `json:"postusername"`
+	UserRole string `json:"postuserrole"`
+	IsUser   bool   `json:"trueuser"`
+	Reacted  bool   `json:"reactedtopost"`
 }
 
 type Like struct {
@@ -32,4 +37,18 @@ type Dislike struct {
 	PostId    int `json:"postid"`
 	CommentId int `json:"commentid"`
 	UserId    int `json:"userid"`
+}
+
+type Comment struct {
+	Id           int    `json:"id"`
+	UserId       int    `json:"userid"`
+	PostId       int    `json:"postid"`
+	Text         string `json:"text"`
+	Like         int    `json:"like"`
+	Dislike      int    `json:"dislike"`
+	ReactionType string `json:"ReactionType"`
+	/**/
+	Username string `json:"commentusername"`
+	UserRole string `json:"commentuserrole"`
+	Reacted  bool   `json:"reacted"`
 }

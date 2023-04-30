@@ -24,6 +24,8 @@ const (
 		created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 		date TEXT,
 		location TEXT,
+		username TEXT, 
+		role TEXT,
 		like INTEGER DEFAULT 0,
 		dislike INTEGER DEFAULT 0,
 		FOREIGN KEY (userId) REFERENCES users(id)
@@ -43,5 +45,34 @@ const (
 		FOREIGN KEY(postId) REFERENCES post(id),
 		FOREIGN KEY(userId) REFERENCES users(id),
 		UNIQUE (userId, postId)
+	);`
+	comment = `CREATE TABLE IF NOT EXISTS comments (
+		id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+		userId INTEGER,
+		postId INTEGER,
+		text TEXT ,
+		like INTEGER DEFAULT 0,
+		dislike INTEGER DEFAULT 0,
+		username TEXT,
+		role TEXT,
+		reacted INTEGER DEFAULT 0,
+		FOREIGN KEY (userId) REFERENCES users(id),
+		FOREIGN KEY (postId) REFERENCES post(id)
+	);`
+	commentLikes = `CREATE TABLE IF NOT EXISTS comment_likes (
+		id INTEGER PRIMARY KEY,
+		commentId INTEGER,
+		userId INTEGER,
+		FOREIGN KEY(commentId) REFERENCES comments(id),
+		FOREIGN KEY(userId) REFERENCES users(id),
+		UNIQUE (userId, commentId)
+	);`
+	commentDislikes = `CREATE TABLE IF NOT EXISTS comment_dislikes (
+		id INTEGER PRIMARY KEY,
+		commentId INTEGER,
+		userId INTEGER,
+		FOREIGN KEY(commentId) REFERENCES comments(id),
+		FOREIGN KEY(userId) REFERENCES users(id),
+		UNIQUE (userId, commentId)
 	);`
 )

@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/saparaly/forum/internal/service"
@@ -30,7 +31,8 @@ func (h *Handler) InitPoutes() http.Handler {
 	mux.HandleFunc("/delete-post", h.deletePost)
 	mux.HandleFunc("/post-reaction", h.postReaction)
 	mux.HandleFunc("/comment-reaction", h.commentReaction)
-	mux.HandleFunc("create-comment", h.createComment)
+	mux.HandleFunc("/create-comment", h.createComment)
+	mux.HandleFunc("/comments", h.getComments)
 
 	return mux
 }
@@ -38,11 +40,13 @@ func (h *Handler) InitPoutes() http.Handler {
 func (h *Handler) GetUserByToken(w http.ResponseWriter, r *http.Request) (*models.User, error) {
 	cookie, err := r.Cookie("token")
 	if err != nil {
+		fmt.Println(err)
 		return &models.User{}, err
 	}
 
 	user, err := h.services.ChechUserByToken(cookie.Value)
 	if err != nil {
+		fmt.Println(err)
 		return &models.User{}, err
 	}
 	return &user, nil

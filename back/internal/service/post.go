@@ -22,6 +22,8 @@ type Post interface {
 	DeletePost(post models.Post) error
 	LikePost(postId, userId int) error
 	DislikePost(postId, userId int) error
+	LikeComment(commentId, userId int) error
+	DislikeComment(commentId, userId int) error
 }
 
 func (s *PostService) CreatePost(post models.Post) (int64, error) {
@@ -71,5 +73,25 @@ func (s *PostService) LikePost(postId, userId int) error {
 }
 
 func (s *PostService) DislikePost(postId, userId int) error {
+	err := s.repo.DislikePost(postId, userId)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s *PostService) LikeComment(commentId, userId int) error {
+	err := s.repo.LikeComment(commentId, userId)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s *PostService) DislikeComment(commentId, userId int) error {
+	err := s.repo.DislikeComment(commentId, userId)
+	if err != nil {
+		return err
+	}
 	return nil
 }

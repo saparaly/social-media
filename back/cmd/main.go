@@ -30,11 +30,3 @@ func main() {
 		log.Fatalf("error: %s", err.Error())
 	}
 }
-
-// jsonResponse := map[string]string{"status": "success"}
-// jsonBytes, err := json.Marshal(jsonResponse)
-// if err != nil {
-// 	http.Error(w, err.Error(), http.StatusInternalServerError)
-// 	return
-// }
-// w.Write(jsonBytes)

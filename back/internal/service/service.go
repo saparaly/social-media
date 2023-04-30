@@ -18,10 +18,9 @@ func NewService(repos *repository.Repository) *Service {
 		Authorization: NewAuthService(repos.Authorization),
 		Post:          NewPostService(repos.Post),
 		Token:         NewTokenService(repos.Token),
+		Comment:       NewCommentService(repos.Comment),
 	}
 }
-
-type Comment interface{}
 
 type Reaction interface{}
 

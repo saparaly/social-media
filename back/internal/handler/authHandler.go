@@ -22,6 +22,10 @@ type signUpResponse struct {
 	IsDeleted bool        `json:"isdeleted"`
 	Post      models.Post `json:"post"`
 	IsLiked   bool        `json:"isliked"`
+	// here is arr of comment
+	Comment models.Comment `json:"commet"`
+	// here is one comment i just messed up
+	Comments models.Comment `json:"comments"`
 }
 
 func (h *Handler) singUp(w http.ResponseWriter, r *http.Request) {

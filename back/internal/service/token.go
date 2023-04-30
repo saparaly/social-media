@@ -15,6 +15,7 @@ func NewTokenService(repo repository.Token) *TokenService {
 
 type Token interface {
 	ChechUserByToken(token string) (models.User, error)
+	GetUserById(id int) (*models.User, error)
 }
 
 func (s *TokenService) ChechUserByToken(token string) (models.User, error) {
@@ -23,4 +24,12 @@ func (s *TokenService) ChechUserByToken(token string) (models.User, error) {
 		return models.User{}, err
 	}
 	return *user, nil
+}
+
+func (s *TokenService) GetUserById(id int) (*models.User, error) {
+	user, err := s.repo.GetUserById(id)
+	if err != nil {
+		return &models.User{}, err
+	}
+	return user, err
 }

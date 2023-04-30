@@ -25,7 +25,7 @@ func OpenDB(dbName string) (*sql.DB, error) {
 }
 
 func createTables(db *sql.DB) error {
-	var queries []string = []string{users, session, post, postLikes, postDislikes}
+	var queries []string = []string{users, session, post, postLikes, postDislikes, postDislikes, comment, commentLikes, commentDislikes}
 
 	for _, query := range queries {
 		_, err := db.Exec(query)
