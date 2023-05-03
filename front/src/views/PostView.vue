@@ -8,7 +8,7 @@
             <div class="post__header-container">
               <h1 class="title">{{ post.title }}</h1>
               <!-- edit -->
-              <div class="edit__container">
+              <div class="edit__container" v-if="post.trueuser">
                 <div class="edit" @click="edit" >
                   <svg width="800px" height="800px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title/><g id="Complete"><g id="edit"><g><path d="M20,16v4a2,2,0,0,1-2,2H4a2,2,0,0,1-2-2V6A2,2,0,0,1,4,4H8" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/><polygon fill="none" points="12.5 15.8 22 6.2 17.8 2 8.3 11.5 8 16 12.5 15.8" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/></g></g></g></svg>
                 </div>
@@ -138,7 +138,13 @@
     async mounted() {
       const postId = this.$route.params.id;
       try {
-        const postResponse = await axios.get(`http://localhost:8000/post?id=${postId}`);
+        // const postResponse = await axios.get(`http://localhost:8000/post?id=${postId}`);
+        const postResponse = await axios.get(`http://localhost:8000/post?id=${postId}`, {
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
         const commentsResponse = await axios.get(`http://localhost:8000/comments?postId=${postId}`);
         this.post = postResponse.data;
         this.comments = commentsResponse.data;
@@ -157,7 +163,7 @@
         // console.log(commentsResponse.data, " comment")
         console.log(postResponse.data, " post")
       } catch (error) {
-        console.log(error);
+        console.log(error); 
         this.errorMessage = "Error loading post";
       }
     },

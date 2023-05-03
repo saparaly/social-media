@@ -86,13 +86,16 @@ func (h *Handler) getPost(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 
 	// get cookie
-	// cookie, err := r.Cookie("token")
-	// if err != nil {
-	// 	fmt.Println(err)
-	// 	w.WriteHeader(http.StatusUnauthorized)
-	// 	return
-	// }
-	// fmt.Println(cookie)
+	currectUser, err := h.GetUserByToken(w, r)
+	if err != nil {
+		fmt.Println(err)
+		response := signUpResponse{
+			Valid: false,
+		}
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	fmt.Println(currectUser)
 	// postid
 	id, err := strconv.Atoi(r.URL.Query().Get("id"))
 	if err != nil {
@@ -106,6 +109,12 @@ func (h *Handler) getPost(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 		http.Error(w, err.Error(), http.StatusNotFound)
 		return
+	}
+
+	if currectUser.Id != post.UserId {
+		post.IsUser = false
+	} else {
+		post.IsUser = true
 	}
 
 	err = json.NewEncoder(w).Encode(post)

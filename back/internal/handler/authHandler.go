@@ -25,7 +25,8 @@ type signUpResponse struct {
 	// here is arr of comment
 	Comment models.Comment `json:"commet"`
 	// here is one comment i just messed up
-	Comments models.Comment `json:"comments"`
+	Comments    models.Comment `json:"comments"`
+	CurrectUser bool           `json:"currectuser"`
 }
 
 func (h *Handler) singUp(w http.ResponseWriter, r *http.Request) {
