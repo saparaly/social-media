@@ -11,6 +11,7 @@ type Repository struct {
 	Reaction
 	Category
 	Token
+	User
 }
 
 func NewRepository(db *sql.DB) *Repository {
@@ -19,6 +20,7 @@ func NewRepository(db *sql.DB) *Repository {
 		Post:          NewPostRepository(db),
 		Token:         NewTokenRepository(db),
 		Comment:       NewCommentRepository(db),
+		User:          NewUserRepository(db),
 	}
 }
 

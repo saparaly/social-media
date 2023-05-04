@@ -80,7 +80,7 @@ func (s *AuthService) CheckUser(user models.User) (models.User, error) {
 	// fmt.Println(user.Password)
 	// fmt.Println(usr.Email)
 	// usr.Email is user password idk they are messed up
-	if user.Password != usr.Email {
+	if user.Password != usr.Password {
 		return models.User{}, errors.New("incorrect password")
 	}
 	return usr, nil

@@ -11,6 +11,7 @@ type Service struct {
 	Reaction
 	Category
 	Token
+	User
 }
 
 func NewService(repos *repository.Repository) *Service {
@@ -19,6 +20,7 @@ func NewService(repos *repository.Repository) *Service {
 		Post:          NewPostService(repos.Post),
 		Token:         NewTokenService(repos.Token),
 		Comment:       NewCommentService(repos.Comment),
+		User:          NewUserService(repos.User),
 	}
 }
 

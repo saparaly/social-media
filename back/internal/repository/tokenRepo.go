@@ -3,6 +3,7 @@ package repository
 import (
 	"database/sql"
 	"errors"
+	"strings"
 
 	"github.com/saparaly/forum/models"
 )
@@ -16,23 +17,31 @@ func NewTokenRepository(db *sql.DB) *TokenRepo {
 }
 
 type Token interface {
-	GetUserIDByToken(token string) (*models.User, error)
+	GetUserByToken(token string) (*models.User, error)
 	GetUserById(id int) (*models.User, error)
 }
 
-func (r *TokenRepo) GetUserIDByToken(token string) (*models.User, error) {
-	stmt := `SELECT u.id, u.role, u.email, u.username, u.password FROM session s JOIN users u ON s.userId = u.id WHERE s.Token = ?`
+func (r *TokenRepo) GetUserByToken(token string) (*models.User, error) {
+	var followers, following sql.NullString
+
+	stmt := `SELECT u.id, u.role, u.email, u.username, u.password, u.followers, u.following FROM session s JOIN users u ON s.userId = u.id WHERE s.Token = ?`
 
 	row := r.db.QueryRow(stmt, token)
 	user := &models.User{}
 
-	err := row.Scan(&user.Id, &user.Role, &user.Email, &user.Username, &user.Password)
+	err := row.Scan(&user.Id, &user.Role, &user.Email, &user.Username, &user.Password, &followers, &following)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, models.ErrNoRecord
 		} else {
 			return nil, err
 		}
+	}
+	if followers.Valid {
+		user.Followers = stringsToInts(strings.Split(followers.String, ","))
+	}
+	if following.Valid {
+		user.Following = stringsToInts(strings.Split(following.String, ","))
 	}
 	return user, nil
 }

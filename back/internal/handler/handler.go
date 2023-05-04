@@ -33,6 +33,8 @@ func (h *Handler) InitPoutes() http.Handler {
 	mux.HandleFunc("/comment-reaction", h.commentReaction)
 	mux.HandleFunc("/create-comment", h.createComment)
 	mux.HandleFunc("/comments", h.getComments)
+	mux.HandleFunc("/users", h.getUsers)
+	mux.HandleFunc("/user-add", h.followUser)
 
 	return mux
 }

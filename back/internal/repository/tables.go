@@ -6,7 +6,9 @@ const (
 		role TEXT NOT NULL,
 		username TEXT NOT NULL UNIQUE,
 		email TEXT NOT NULL UNIQUE,
-		password TEXT NOT NULL
+		password TEXT NOT NULL,
+		followers TEXT,
+		following TEXT
 	);`
 	session = `CREATE TABLE IF NOT EXISTS session (
 		id INTEGER PRIMARY KEY,

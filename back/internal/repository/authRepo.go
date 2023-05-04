@@ -34,11 +34,11 @@ func (r *AuthRepo) CreateUser(user models.User) (int, error) {
 }
 
 func (r *AuthRepo) GetUserByUsername(username string) (models.User, error) {
-	query := "SELECT * FROM users WHERE username = $1"
+	query := "SELECT id, role, username, email, password FROM users WHERE username = $1"
 	row := r.db.QueryRow(query, username)
 
 	var fullUser models.User
-	err := row.Scan(&fullUser.Id, &fullUser.Role, &fullUser.Username, &fullUser.Password, &fullUser.Email)
+	err := row.Scan(&fullUser.Id, &fullUser.Role, &fullUser.Username, &fullUser.Email, &fullUser.Password)
 	if err != nil {
 		return models.User{}, err
 	}
@@ -46,11 +46,11 @@ func (r *AuthRepo) GetUserByUsername(username string) (models.User, error) {
 }
 
 func (r *AuthRepo) GetUserByEmail(email string) (models.User, error) {
-	query := "SELECT * FROM users WHERE email = $1"
+	query := "SELECT id, role, username, email, password FROM users WHERE email = $1"
 	row := r.db.QueryRow(query, email)
 
 	var fullUser models.User
-	err := row.Scan(&fullUser.Id, &fullUser.Role, &fullUser.Username, &fullUser.Password, &fullUser.Email)
+	err := row.Scan(&fullUser.Id, &fullUser.Role, &fullUser.Username, &fullUser.Email, &fullUser.Password)
 	if err != nil {
 		return models.User{}, err
 	}

@@ -5,7 +5,8 @@
       <RouterLink to="/">Home</RouterLink>
 
       <div v-if="isAuthenticated">
-          <RouterLink to="/create-post">create post</RouterLink>
+        <RouterLink to="/create-post">create post</RouterLink>
+        <RouterLink to="/users">user list</RouterLink>
           <!-- <RouterLink to="/profile">profile</RouterLink>
           <RouterLink to="/todos">todos</RouterLink>
           <RouterLink to="/chat">chat</RouterLink> -->

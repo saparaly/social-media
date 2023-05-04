@@ -19,7 +19,7 @@ type Token interface {
 }
 
 func (s *TokenService) ChechUserByToken(token string) (models.User, error) {
-	user, err := s.repo.GetUserIDByToken(token)
+	user, err := s.repo.GetUserByToken(token)
 	if err != nil {
 		return models.User{}, err
 	}

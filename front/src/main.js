@@ -11,6 +11,7 @@ const router = createRouter({
     history: createWebHistory(),
     routes: [
         { name: 'Home', path: '/', component: () => import('./views/HomeView.vue') },
+        { name: 'Users', path: '/users', component: () => import('./views/UserView.vue')},
         { name: 'SignUp', path: '/signup', component: () => import('./views/SignupView.vue')},
         { name: 'SignIn', path: '/signin', component: () => import('./views/SigninView.vue') },
         { name: 'Logout', path: '/logout', component: () => import('./views/LogoutView.vue') },
