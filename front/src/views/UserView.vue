@@ -4,7 +4,8 @@
       <div class="users">
         <p>{{ mes }}</p>
         <div class="user" v-for="user in users">
-          <button @click="addUser(user.username)">add</button>
+          <button @click="addUser(user.username)">follow</button>
+          <button @click="removeUser(user.username)">unfollow</button>
           <div class="user">@{{ user.username }}</div>
           <div class="user">{{ user.email }}</div>
           <div class="user">{{ user.role }}</div>
@@ -60,6 +61,28 @@ export default {
           console.log(response.data)
           if (response.status === 200 && response.data.valid) {
             this.mes = `now you follow ${username}`
+            
+          } else{
+            this.errorMess = response.data.err
+          }
+        } catch (error) {
+          console.log(error)
+        }
+      },
+      async removeUser(username) {
+        try {
+          const response = await axios.post('http://localhost:8000/user-remove', {
+            Username: username
+          },{
+            withCredentials: true,
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          })
+          console.log(response.data.valid)
+          console.log(response.data)
+          if (response.status === 200 && response.data.valid) {
+            this.mes = `now you unfollow ${username}`
             
           } else{
             this.errorMess = response.data.err
