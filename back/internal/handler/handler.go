@@ -22,6 +22,7 @@ func (h *Handler) InitPoutes() http.Handler {
 	// mux.GET("/post/:%d", h.getPost)
 
 	mux := http.NewServeMux()
+	mux.HandleFunc("/home", h.home)
 	mux.HandleFunc("/signup", h.singUp)
 	mux.HandleFunc("/signin", h.signIn)
 	mux.HandleFunc("/logout", h.logout)

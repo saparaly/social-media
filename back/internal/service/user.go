@@ -18,6 +18,7 @@ type User interface {
 	AddUser(username string, currectUserId int) error
 	GetUserIdByUsername(username string) (int, error)
 	UpdateUser(user models.User) error
+	GetFollowedUsersPost(currectUser models.User) ([]models.Post, error)
 }
 
 func (s *UserService) GetUsers() ([]models.User, error) {
@@ -58,4 +59,12 @@ func (s *UserService) UpdateUser(user models.User) error {
 		return err
 	}
 	return nil
+}
+
+func (s *UserService) GetFollowedUsersPost(currectUser models.User) ([]models.Post, error) {
+	post, err := s.repo.GetFollowedUsersPost(currectUser)
+	if err != nil {
+		return nil, err
+	}
+	return post, nil
 }

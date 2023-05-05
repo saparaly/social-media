@@ -23,6 +23,9 @@ type User interface {
 	GetUserIdByUsername(username string) (int, error)
 	GetUserById(id int) (models.User, error)
 	UpdateUser(user models.User) error
+	GetFollowedUsersPost(currectUser models.User) ([]models.Post, error)
+	getPostIdsByUserId(userId int) ([]int, error)
+	GetPost(postId int) (models.Post, error)
 }
 
 func (r *UserRepo) GetUsers() ([]models.User, error) {
@@ -109,4 +112,85 @@ func (r *UserRepo) UpdateUser(user models.User) error {
 	}
 
 	return nil
+}
+
+func (r *UserRepo) GetFollowedUsersPost(currentUser models.User) ([]models.Post, error) {
+	var posts []models.Post
+
+	// postIds created by user
+	// currentUser.Following [0, 1, 2]
+	if len(currentUser.Following) > 0 && currentUser.Following[0] == 0 {
+		currentUser.Following = append(currentUser.Following[:0], currentUser.Following[1:]...)
+	}
+
+	var postsIds []int
+	for i := 0; i < len(currentUser.Following); i++ {
+		postId, err := r.getPostIdsByUserId(currentUser.Following[i])
+		if err != nil {
+			return nil, err
+		}
+		postsIds = append(postsIds, postId...)
+	}
+	fmt.Println(postsIds, " all post ids by user")
+
+	for i := 0; i < len(postsIds); i++ {
+		post, err := r.GetPost(postsIds[i])
+		fmt.Println(err, " error is here")
+		if err != nil {
+			return nil, err
+		}
+		fmt.Println(post, " post")
+		posts = append(posts, post)
+		// fmt.Println(posts, " test post")
+	}
+	// post, err := r.GetPost(postsIds[0])
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// posts = append(posts, post)
+
+	// fmt.Println(posts, "all posts")
+	return posts, nil
+}
+
+func (r *UserRepo) getPostIdsByUserId(userId int) ([]int, error) {
+	var postIds []int
+
+	query := "SELECT id FROM post WHERE userId = ?"
+	rows, err := r.db.Query(query, userId)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var postId int
+		if err := rows.Scan(&postId); err != nil {
+			return nil, err
+		}
+		postIds = append(postIds, postId)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return postIds, nil
+}
+
+func (r *UserRepo) GetPost(postId int) (models.Post, error) {
+	stmt, err := r.db.Prepare("SELECT id, userId, username, role, title, img, description, tags, created, date, location, like, dislike FROM post WHERE id = ?")
+	if err != nil {
+		return models.Post{}, err
+	}
+	defer stmt.Close()
+
+	var post models.Post
+	var tagsString string
+	err = stmt.QueryRow(postId).Scan(&post.Id, &post.UserId, &post.Username, &post.UserRole, &post.Title, &post.Img, &post.Description, &tagsString, &post.Created, &post.Date, &post.Location, &post.Like, &post.Dislike)
+	if err != nil {
+		return models.Post{}, err
+	}
+
+	post.Tags = strings.Split(tagsString, ",")
+	return post, nil
 }

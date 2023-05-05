@@ -220,3 +220,39 @@ func (h *Handler) unfollowUser(w http.ResponseWriter, r *http.Request) {
 	}
 	json.NewEncoder(w).Encode(response)
 }
+
+func (h *Handler) home(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "OPTIONS" {
+		w.Header().Set("Access-Control-Allow-Origin", allowedOrigin)
+		w.Header().Set("Access-Control-Allow-Methods", "GET")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		w.Header().Set("Access-Control-Allow-Credentials", "true")
+		return
+	}
+	w.Header().Set("Access-Control-Allow-Origin", allowedOrigin)
+	w.Header().Set("Access-Control-Allow-Credentials", "true")
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+
+	currentUser, err := h.GetUserByToken(w, r)
+	if err != nil {
+		fmt.Println(err)
+		response := signUpResponse{
+			Valid: false,
+		}
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+	fmt.Println(currentUser.Following)
+
+	post, err := h.services.GetFollowedUsersPost(*currentUser)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	// fmt.Println(post)
+	err = json.NewEncoder(w).Encode(post)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
