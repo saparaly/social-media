@@ -13,6 +13,7 @@ const (
 )
 
 type signUpResponse struct {
+	// this id for created user
 	Id        int         `json:"id"`
 	Valid     bool        `json:"valid"`
 	Err       string      `json:"err,omitempty"`

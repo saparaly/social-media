@@ -21,16 +21,27 @@ func (h *Handler) getUsers(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Credentials", "true")
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 
+	currentUser, err := h.GetUserByToken(w, r)
+	if err != nil {
+		fmt.Println(err)
+		response := signUpResponse{
+			Valid: false,
+		}
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
 	user, err := h.services.GetUsers()
 	if err != nil {
 		fmt.Println(err, " is this err")
 		return
 	}
 
-	// fmt.Println(user)
+	fmt.Println(user)
 
 	w.WriteHeader(http.StatusOK)
 	response := signUpResponse{
+		Id:    currentUser.Id,
 		Valid: true,
 		Users: user,
 	}
@@ -167,7 +178,10 @@ func (h *Handler) unfollowUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	toUnfollowId, err := h.services.GetUserIdByUsername(user.Username)
-
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 	toUnfollowUser, err := h.services.GetUserById(toUnfollowId)
 	if err != nil {
 		fmt.Println(err)
@@ -242,7 +256,7 @@ func (h *Handler) home(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(response)
 		return
 	}
-	fmt.Println(currentUser.Following)
+	// fmt.Println(currentUser.Following)
 
 	post, err := h.services.GetFollowedUsersPost(*currentUser)
 	if err != nil {

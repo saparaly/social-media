@@ -4,16 +4,22 @@
       <div class="users">
         <p>{{ mes }}</p>
         <div class="user" v-for="user in users">
-          <button @click="addUser(user.username)">follow</button>
-          <button @click="removeUser(user.username)">unfollow</button>
+
+          <!-- if currectUser.following includes user.id disply unfollow else follow -->
+          <!-- <button @click="addUser(user.username)">follow</button>
+          <button @click="removeUser(user.username)">unfollow</button> -->
+          <button v-if="currectUser.following.includes(user.id)" @click="removeUser(user.username)">unfollow</button>
+<button v-else @click="addUser(user.username)">follow</button>
+ 
           <div class="user">@{{ user.username }}</div>
           <div class="user">{{ user.email }}</div>
           <div class="user">{{ user.role }}</div>
           <div class="user">followers: {{ user.followers}}</div>
           <div class="user">following: {{ user.following }}</div>
         </div>
-        {{ userFolloing }}
       </div>
+      <!-- {{ users }} -->
+      {{ currectUser.following }}
     </div>
 </template>
 
@@ -23,11 +29,13 @@ import axios from 'axios'
 export default {
     name: 'Users',
     data() {
-        return {
-            users: [],
-            userFolloing:[],
-            mes: '',
-            isFolloing: false
+        return { 
+          currectUserId: null,
+          currectUser: {},
+          users: [],
+          userFollowing: [],
+          mes: '',
+          isFollowing: false,
         }
     },
     async mounted() {
@@ -38,9 +46,10 @@ export default {
             'Content-Type': 'application/json'
           }
         });
+        console.log(usersResponse.data, " users")
         this.users = usersResponse.data.users;
-        this.userFolloing = usersResponse.data.users.following
-        console.log(usersResponse.data.users, " users")
+        this.currectUserId = usersResponse.data.id
+        this.currectUser = this.users.find(user => user.id === this.currectUserId);
       } catch (error) {
         console.log(error); 
         this.errorMessage = "Error loading users";
