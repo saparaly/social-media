@@ -37,7 +37,7 @@ func (h *Handler) getUsers(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println(user)
+	// fmt.Println(user)
 
 	w.WriteHeader(http.StatusOK)
 	response := signUpResponse{
@@ -86,6 +86,10 @@ func (h *Handler) followUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	toFollowId, err := h.services.GetUserIdByUsername(user.Username)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 
 	toFollowUser, err := h.services.GetUserById(toFollowId)
 	if err != nil {
@@ -125,6 +129,7 @@ func (h *Handler) followUser(w http.ResponseWriter, r *http.Request) {
 	if !alreadyFollowed {
 		// Update the user to follow's followers list
 		toFollowUser.Followers = append(toFollowUser.Followers, currentUser.Id)
+		toFollowUser.Id = toFollowId
 		// Save the updated user information back to the database
 		err = h.services.UpdateUser(*toFollowUser)
 		if err != nil {
@@ -199,10 +204,10 @@ func (h *Handler) unfollowUser(w http.ResponseWriter, r *http.Request) {
 
 	if followingIndex != -1 {
 		// Remove the user to unfollow from the following list
-		fmt.Println(currentUser.Following, "1")
+		// fmt.Println(currentUser.Following, "1")
 		currentUser.Following = append(currentUser.Following[:followingIndex], currentUser.Following[followingIndex+1:]...)
 		// Save the updated user information back to the database
-		fmt.Println(currentUser.Following, "2")
+		// fmt.Println(currentUser.Following, "2")
 		err = h.services.UpdateUser(*currentUser)
 		if err != nil {
 			return
@@ -269,4 +274,100 @@ func (h *Handler) home(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+}
+
+func (h *Handler) followedUsers(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "OPTIONS" {
+		w.Header().Set("Access-Control-Allow-Origin", allowedOrigin)
+		w.Header().Set("Access-Control-Allow-Methods", "GET")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		w.Header().Set("Access-Control-Allow-Credentials", "true")
+		return
+	}
+	w.Header().Set("Access-Control-Allow-Origin", allowedOrigin)
+	w.Header().Set("Access-Control-Allow-Credentials", "true")
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+
+	// user to follow
+	var user *models.User
+	err = json.Unmarshal(body, &user)
+	if err != nil {
+		fmt.Println(err)
+		http.Error(w, "Invalid JSON data", http.StatusBadRequest)
+		return
+	}
+
+	if len(user.Following) > 0 && user.Following[0] == 0 {
+		user.Following = user.Following[1:]
+	}
+	fmt.Println(user.Following)
+	var users []models.User
+
+	for i := 0; i < len(user.Following); i++ {
+		userOne, err := h.services.GetUserById(user.Following[i])
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		fmt.Println(user.Following[i], " user.Following[i]")
+		fmt.Println(user, " one user")
+		users = append(users, *userOne)
+	}
+
+	w.WriteHeader(http.StatusOK)
+	response := signUpResponse{
+		Valid: true,
+		Users: users,
+	}
+	json.NewEncoder(w).Encode(response)
+}
+
+func (h *Handler) profile(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "OPTIONS" {
+		w.Header().Set("Access-Control-Allow-Origin", allowedOrigin)
+		w.Header().Set("Access-Control-Allow-Methods", "GET")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		w.Header().Set("Access-Control-Allow-Credentials", "true")
+		return
+	}
+	w.Header().Set("Access-Control-Allow-Origin", allowedOrigin)
+	w.Header().Set("Access-Control-Allow-Credentials", "true")
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+
+	user, err := h.GetUserByToken(w, r)
+	if err != nil {
+		fmt.Println(err)
+		response := signUpResponse{
+			Valid: false,
+		}
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	userPost, err := h.services.GetUserCreatedPosts(user.Id)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	userLikedPosts, err := h.services.GetLikedPosts(user.Id)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	response := signUpResponse{
+		Valid:        true,
+		User:         *user,
+		CreatedPosts: userPost,
+		LikedPosts:   userLikedPosts,
+	}
+	json.NewEncoder(w).Encode(response)
 }

@@ -19,6 +19,8 @@ type User interface {
 	GetUserIdByUsername(username string) (int, error)
 	UpdateUser(user models.User) error
 	GetFollowedUsersPost(currectUser models.User) ([]models.Post, error)
+	GetUserCreatedPosts(id int) ([]models.Post, error)
+	GetLikedPosts(id int) ([]models.Post, error)
 }
 
 func (s *UserService) GetUsers() ([]models.User, error) {
@@ -67,4 +69,20 @@ func (s *UserService) GetFollowedUsersPost(currectUser models.User) ([]models.Po
 		return nil, err
 	}
 	return post, nil
+}
+
+func (s *UserService) GetUserCreatedPosts(id int) ([]models.Post, error) {
+	posts, err := s.repo.GetUserCreatedPosts(id)
+	if err != nil {
+		return nil, err
+	}
+	return posts, nil
+}
+
+func (s *UserService) GetLikedPosts(id int) ([]models.Post, error) {
+	posts, err := s.repo.GetLikedPosts(id)
+	if err != nil {
+		return nil, err
+	}
+	return posts, nil
 }

@@ -5,7 +5,10 @@
         <div class="posts">
             <div class="post" v-for="post in posts" :key="post.id">
 
-                <p> title: {{  post.title }}</p>
+                <!-- <p> title: {{  post.title }}</p> -->
+                <a :href="'/post/' + post.id">
+                  <p>title: {{ post.title }}</p>
+                </a>
                 <img :src="post.img" alt="">
                 <p>created: {{ post.created }}</p>
                 <p>desc: {{ post.description }}</p>
@@ -49,5 +52,28 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+.post {
+  border: 1px solid black;
+  margin: 10px;
+  padding: 10px;
+}
+
+.post img {
+  max-width: 100%;
+  height: auto;
+  margin: 10px 0;
+}
+
+.tags {
+  display: inline-block;
+  margin-right: 5px;
+  margin-bottom: 5px;
+  padding: 2px 5px;
+  background-color: lightgray;
+  border-radius: 5px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
 </style>

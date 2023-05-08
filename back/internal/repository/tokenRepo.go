@@ -47,17 +47,30 @@ func (r *TokenRepo) GetUserByToken(token string) (*models.User, error) {
 }
 
 func (r *TokenRepo) GetUserById(id int) (*models.User, error) {
-	stmt, err := r.db.Prepare("SELECT role, username FROM users WHERE id = ?")
-	if err != nil {
-		return nil, err
-	}
-	defer stmt.Close()
+	// stmt, err := r.db.Prepare("SELECT role, username FROM users WHERE id = ?")
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// defer stmt.Close()
 
+	// var user models.User
+	// err = stmt.QueryRow(id).Scan(&user.Role, &user.Username)
+	// if err != nil {
+	// 	return nil, err
+	// }
+
+	// return &user, nil
 	var user models.User
-	err = stmt.QueryRow(id).Scan(&user.Role, &user.Username)
+	var followers, following sql.NullString
+	err := r.db.QueryRow("SELECT id, username, email, password, role, followers, following FROM users WHERE id = $1", id).Scan(&user.Id, &user.Username, &user.Email, &user.Password, &user.Role, &followers, &following)
 	if err != nil {
-		return nil, err
+		return &models.User{}, err
 	}
-
+	if followers.Valid {
+		user.Followers = stringsToInts(strings.Split(followers.String, ","))
+	}
+	if following.Valid {
+		user.Following = stringsToInts(strings.Split(following.String, ","))
+	}
 	return &user, nil
 }

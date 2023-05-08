@@ -25,6 +25,9 @@ type Post interface {
 	DislikePost(postId, userId int) error
 	LikeComment(commentId, userId int) error
 	DislikeComment(commentId, userId int) error
+	//
+	Isliked(u, p int) (bool, error)
+	Isdisliked(u, p int) (bool, error)
 }
 
 func (r *PostRepo) CreatePost(post models.Post) (int64, error) {
@@ -273,4 +276,24 @@ func (r *PostRepo) DislikeComment(commentId, userId int) error {
 		return err
 	}
 	return nil
+}
+
+func (r *PostRepo) Isliked(userId, postId int) (bool, error) {
+	query := "SELECT COUNT(*) FROM post_likes WHERE userId = ? AND postId = ?"
+	var count int
+	err := r.db.QueryRow(query, userId, postId).Scan(&count)
+	if err != nil {
+		return false, err
+	}
+	return count > 0, nil
+}
+
+func (r *PostRepo) Isdisliked(userId, postId int) (bool, error) {
+	query := "SELECT COUNT(*) FROM post_dislikes WHERE userId = ? AND postId = ?"
+	var count int
+	err := r.db.QueryRow(query, userId, postId).Scan(&count)
+	if err != nil {
+		return false, err
+	}
+	return count > 0, nil
 }

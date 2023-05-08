@@ -95,7 +95,6 @@ func (h *Handler) getPost(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(response)
 		return
 	}
-	fmt.Println(currectUser)
 	// postid
 	id, err := strconv.Atoi(r.URL.Query().Get("id"))
 	if err != nil {
@@ -116,6 +115,22 @@ func (h *Handler) getPost(w http.ResponseWriter, r *http.Request) {
 	} else {
 		post.IsUser = true
 	}
+
+	/* reaction*/
+
+	like, err := h.services.Isliked(currectUser.Id, post.Id)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	dislike, err := h.services.Isdisliked(currectUser.Id, post.Id)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	post.Isliked = like
+	post.Isdisliked = dislike
 
 	err = json.NewEncoder(w).Encode(post)
 	if err != nil {

@@ -7,10 +7,10 @@
       <div v-if="isAuthenticated">
         <RouterLink to="/create-post">create post</RouterLink>
         <RouterLink to="/users">user list</RouterLink>
-          <!-- <RouterLink to="/profile">profile</RouterLink>
-          <RouterLink to="/todos">todos</RouterLink>
-          <RouterLink to="/chat">chat</RouterLink> -->
-          <!-- <RouterLink to="/post/">my post</RouterLink> -->
+          <RouterLink to="/userProf">profile</RouterLink>
+          <!-- <RouterLink to="/todos">todos</RouterLink>
+          <RouterLink to="/chat">chat</RouterLink>
+          <RouterLink to="/post/">my post</RouterLink> -->
           <RouterLink to="/logout" @click.prevent="logout">logout</RouterLink>
         </div>
 

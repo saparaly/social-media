@@ -37,6 +37,8 @@ func (h *Handler) InitPoutes() http.Handler {
 	mux.HandleFunc("/users", h.getUsers)
 	mux.HandleFunc("/user-add", h.followUser)
 	mux.HandleFunc("/user-remove", h.unfollowUser)
+	mux.HandleFunc("/followed-users", h.followedUsers)
+	mux.HandleFunc("/profile", h.profile)
 
 	return mux
 }

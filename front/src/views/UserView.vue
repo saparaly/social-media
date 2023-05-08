@@ -5,21 +5,39 @@
         <p>{{ mes }}</p>
         <div class="user" v-for="user in users">
 
-          <!-- if currectUser.following includes user.id disply unfollow else follow -->
-          <!-- <button @click="addUser(user.username)">follow</button>
-          <button @click="removeUser(user.username)">unfollow</button> -->
-          <button v-if="currectUser.following.includes(user.id)" @click="removeUser(user.username)">unfollow</button>
-<button v-else @click="addUser(user.username)">follow</button>
- 
+          <div v-if="currectUser.following === null">
+            <button @click="addUser(user.username)">follow</button>
+          </div>
+          <div v-else>
+            <button v-if="currectUser.following.includes(user.id)" @click="removeUser(user.username)">unfollow</button>
+            <button v-else @click="addUser(user.username)">follow</button>
+          </div>
+
+
           <div class="user">@{{ user.username }}</div>
           <div class="user">{{ user.email }}</div>
           <div class="user">{{ user.role }}</div>
-          <div class="user">followers: {{ user.followers}}</div>
-          <div class="user">following: {{ user.following }}</div>
+          <div class="user none">followers: {{ user.followers}}</div>
+          <div class="user click" @click.prevent="getFolloingUsers(user.following, user.username)">
+            following:
+            {{ user.following.length > 0 ? (user.following[0] == 0 ? user.following.length - 1 : user.following.length) : 0 }}
+          </div>
+
         </div>
       </div>
       <!-- {{ users }} -->
-      {{ currectUser.following }}
+      <!-- {{ currectUser.following }} -->
+      <div class="modal" v-if="followedUsers && followedUsers.length > 0">
+        <h2>{{ username }} follows: </h2>
+        <ul class="user-list">
+          <li v-for="user in followedUsers" :key="user.id">
+            <h3>{{ user.username }}</h3>
+            <p>Role: {{ user.role }}</p>
+            <p>Following: {{ user.following.length }}</p>
+          </li>
+        </ul>
+      </div>
+
     </div>
 </template>
 
@@ -36,6 +54,8 @@ export default {
           userFollowing: [],
           mes: '',
           isFollowing: false,
+          followedUsers: [],
+          username: '',
         }
     },
     async mounted() {
@@ -46,7 +66,7 @@ export default {
             'Content-Type': 'application/json'
           }
         });
-        console.log(usersResponse.data, " users")
+        // console.log(usersResponse.data, " users")
         this.users = usersResponse.data.users;
         this.currectUserId = usersResponse.data.id
         this.currectUser = this.users.find(user => user.id === this.currectUserId);
@@ -99,12 +119,64 @@ export default {
         } catch (error) {
           console.log(error)
         }
+      },
+      async getFolloingUsers(userFollowing, username) {
+        try {
+          const response = await axios.post('http://localhost:8000/followed-users', {
+            Following: userFollowing
+          },{
+            withCredentials: true,
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          })
+          // console.log(response.data.valid)
+          console.log(response.data, " folloewd users")
+          if (response.status === 200 && response.data.valid) {
+            this.followedUsers =  response.data.users   
+            this.username =   username      
+          } else{
+            this.errorMess = response.data.err
+          }
+        } catch (error) {
+          console.log(error)
+        }
       }
     }
 }
 </script>
 
 <style scoped>
+.modal {
+  position: fixed;
+  top: 30%;
+  right: 17%;
+    width: 400px;
+    height: 300px;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+    padding: 20px;
+    border-radius: 20px;
+  }
+
+  .user-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .user-list li {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+
+  .user-list li h3 {
+    margin: 0;
+  }
 .user {
   width: 100%;
   display: flex;
@@ -137,5 +209,12 @@ export default {
   margin-top: 5px;
   font-size: 12px;
   color: #888;
+}
+
+.none {
+  display: none;
+}
+.click {
+  cursor: pointer;
 }
 </style>

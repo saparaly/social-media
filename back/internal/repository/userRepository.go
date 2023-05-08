@@ -26,6 +26,8 @@ type User interface {
 	GetFollowedUsersPost(currectUser models.User) ([]models.Post, error)
 	getPostIdsByUserId(userId int) ([]int, error)
 	GetPost(postId int) (models.Post, error)
+	GetUserCreatedPosts(id int) ([]models.Post, error)
+	GetLikedPosts(id int) ([]models.Post, error)
 }
 
 func (r *UserRepo) GetUsers() ([]models.User, error) {
@@ -99,14 +101,14 @@ func (r *UserRepo) UpdateUser(user models.User) error {
 	followersStr := strings.Trim(strings.Join(strings.Fields(fmt.Sprint(user.Followers)), ","), "[]")
 	followingStr := strings.Trim(strings.Join(strings.Fields(fmt.Sprint(user.Following)), ","), "[]")
 
-	// Update the user information in the database
-	stmt, err := r.db.Prepare("UPDATE users SET username=?, email=?, password=?, role=?, followers=?, following=? WHERE id=?")
+	// Update the user information in the database followers
+	stmt, err := r.db.Prepare("UPDATE users SET username=?, email=?,followers=?, following=? WHERE id=?")
 	if err != nil {
 		return err
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(user.Username, user.Email, user.Password, user.Role, followersStr, followingStr, user.Id)
+	_, err = stmt.Exec(user.Username, user.Email, followersStr, followingStr, user.Id)
 	if err != nil {
 		return err
 	}
@@ -131,25 +133,14 @@ func (r *UserRepo) GetFollowedUsersPost(currentUser models.User) ([]models.Post,
 		}
 		postsIds = append(postsIds, postId...)
 	}
-	fmt.Println(postsIds, " all post ids by user")
 
 	for i := 0; i < len(postsIds); i++ {
 		post, err := r.GetPost(postsIds[i])
-		fmt.Println(err, " error is here")
 		if err != nil {
 			return nil, err
 		}
-		fmt.Println(post, " post")
 		posts = append(posts, post)
-		// fmt.Println(posts, " test post")
 	}
-	// post, err := r.GetPost(postsIds[0])
-	// if err != nil {
-	// 	return nil, err
-	// }
-	// posts = append(posts, post)
-
-	// fmt.Println(posts, "all posts")
 	return posts, nil
 }
 
@@ -193,4 +184,71 @@ func (r *UserRepo) GetPost(postId int) (models.Post, error) {
 
 	post.Tags = strings.Split(tagsString, ",")
 	return post, nil
+}
+
+func (r *UserRepo) GetUserCreatedPosts(id int) ([]models.Post, error) {
+	stmt := `SELECT id, userId, username, role, title, img, description, tags, created, date, location, like, dislike
+	FROM post WHERE userId = ?`
+
+	rows, err := r.db.Query(stmt, id)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	posts := []models.Post{}
+
+	for rows.Next() {
+		post := &models.Post{}
+		var tagsString string
+		err := rows.Scan(&post.Id, &post.UserId, &post.Username, &post.UserRole, &post.Title, &post.Img, &post.Description, &tagsString, &post.Created, &post.Date, &post.Location, &post.Like, &post.Dislike)
+		if err != nil {
+			return nil, err
+		}
+		post.Tags = strings.Split(tagsString, ",")
+		posts = append(posts, *post)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return posts, nil
+}
+
+func (r *UserRepo) GetLikedPosts(id int) ([]models.Post, error) {
+	// Get the IDs of all posts that have been liked by the user
+	rows, err := r.db.Query("SELECT postId FROM post_likes WHERE userId = $1", id)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	// Create a slice to hold the liked posts
+	likedPosts := []models.Post{}
+
+	// Iterate through the rows and add each post to the likedPosts slice
+	for rows.Next() {
+		var postID int
+		err := rows.Scan(&postID)
+		if err != nil {
+			return nil, err
+		}
+
+		// Use the Get method to get the post by its ID
+		post, err := r.GetPost(postID)
+		if err != nil {
+			return nil, err
+		}
+
+		likedPosts = append(likedPosts, post)
+	}
+
+	// Check for any errors that occurred while iterating through the rows
+	err = rows.Err()
+	if err != nil {
+		return nil, err
+	}
+
+	return likedPosts, nil
 }

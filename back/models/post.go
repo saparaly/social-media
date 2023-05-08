@@ -19,10 +19,12 @@ type Post struct {
 	Dislike      int        `json:"dislike"`
 	ReactionType string     `json:"ReactionType"`
 	/**/
-	Username string `json:"postusername"`
-	UserRole string `json:"postuserrole"`
-	IsUser   bool   `json:"trueuser"`
-	Reacted  bool   `json:"reactedtopost"`
+	Username   string `json:"postusername"`
+	UserRole   string `json:"postuserrole"`
+	IsUser     bool   `json:"trueuser"`
+	Reacted    bool   `json:"reactedtopost"`
+	Isliked    bool   `json:"isliked"`
+	Isdisliked bool   `json:"isdisliked"`
 }
 
 type Like struct {

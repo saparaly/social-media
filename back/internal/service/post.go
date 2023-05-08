@@ -24,6 +24,9 @@ type Post interface {
 	DislikePost(postId, userId int) error
 	LikeComment(commentId, userId int) error
 	DislikeComment(commentId, userId int) error
+	//
+	Isliked(u, p int) (bool, error)
+	Isdisliked(u, p int) (bool, error)
 }
 
 func (s *PostService) CreatePost(post models.Post) (int64, error) {
@@ -94,4 +97,19 @@ func (s *PostService) DislikeComment(commentId, userId int) error {
 		return err
 	}
 	return nil
+}
+
+func (s *PostService) Isliked(u, p int) (bool, error) {
+	b, err := s.repo.Isliked(u, p)
+	if err != nil {
+		return false, err
+	}
+	return b, err
+}
+func (s *PostService) Isdisliked(u, p int) (bool, error) {
+	b, err := s.repo.Isdisliked(u, p)
+	if err != nil {
+		return false, err
+	}
+	return b, err
 }

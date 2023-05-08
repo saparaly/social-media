@@ -48,7 +48,7 @@ methods: {
       },{
         withCredentials: true
       })
-      // console.log(response.data)
+      // con sole.log(response.data)
       console.log(response.data.valid)
         if (response.status === 200 && response.data.valid) {
           this.$router.push('/')
