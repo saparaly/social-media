@@ -14,11 +14,10 @@
           </div>
 
 
-          <div class="user">@{{ user.username }}</div>
-          <div class="user">{{ user.email }}</div>
-          <div class="user">{{ user.role }}</div>
-          <div class="user none">followers: {{ user.followers}}</div>
-          <div class="user click" @click.prevent="getFolloingUsers(user.following, user.username)">
+          <div class="username">@{{ user.username }} <span> {{ user.role }}</span></div>
+          <div class="username">{{ user.email }}</div>
+          <div class="username">followers: {{ user.followers}}</div>
+          <div class="follow click" @click.prevent="getFolloingUsers(user.following, user.username)">
             following:
             {{ user.following.length > 0 ? (user.following[0] == 0 ? user.following.length - 1 : user.following.length) : 0 }}
           </div>
@@ -28,7 +27,7 @@
       <!-- {{ users }} -->
       <!-- {{ currectUser.following }} -->
       <div class="modal" v-if="followedUsers && followedUsers.length > 0">
-        <h2>{{ username }} follows: </h2>
+        <h2>{{ username }} Follows </h2>
         <ul class="user-list">
           <li v-for="user in followedUsers" :key="user.id">
             <h3>{{ user.username }}</h3>
@@ -66,7 +65,7 @@ export default {
             'Content-Type': 'application/json'
           }
         });
-        // console.log(usersResponse.data, " users")
+        console.log(usersResponse.data, " users")
         this.users = usersResponse.data.users;
         this.currectUserId = usersResponse.data.id
         this.currectUser = this.users.find(user => user.id === this.currectUserId);
@@ -147,70 +146,33 @@ export default {
 </script>
 
 <style scoped>
-.modal {
-  position: fixed;
-  top: 30%;
-  right: 17%;
-    width: 400px;
-    height: 300px;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    flex-direction: column;
-    overflow: auto;
-    padding: 20px;
-    border-radius: 20px;
-  }
-
-  .user-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  .user-list li {
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 10px;
-    margin-bottom: 10px;
-  }
-
-  .user-list li h3 {
-    margin: 0;
-  }
-.user {
-  width: 100%;
+.user{
   display: flex;
   align-items: center;
-  margin: 10px;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  background: #8593bd;
+  color: #5d54a4;
   padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
 }
-.user button {
-  padding: 5px 10px;
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-.user .user {
+.username span{
   font-weight: bold;
-  margin-bottom: 5px;
+  color: #fff;
 }
-
-.user .user:not(:last-child) {
-  margin-bottom: 3px;
-  color: #666;
+button {
+  width: 80px;
+  padding: 5px;
+  background: transparent;
+  border: 1px solid #5d54a4;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+  color: #5d54a4;
 }
-
-.user .user:last-child {
-  margin-top: 5px;
-  font-size: 12px;
-  color: #888;
+button:hover {
+  transform: scale(1.1);
 }
-
 .none {
   display: none;
 }

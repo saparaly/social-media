@@ -1,6 +1,6 @@
 <template>
 <div class="nav">
-  <div class="container">
+  <!-- <div class="container"> -->
     <div class="nav__container">
       <RouterLink to="/">Home</RouterLink>
 
@@ -11,7 +11,7 @@
           <!-- <RouterLink to="/todos">todos</RouterLink>
           <RouterLink to="/chat">chat</RouterLink>
           <RouterLink to="/post/">my post</RouterLink> -->
-          <RouterLink to="/logout" @click.prevent="logout">logout</RouterLink>
+          <RouterLink class="last" to="/logout" @click.prevent="logout">logout</RouterLink>
         </div>
 
         <div v-else>
@@ -19,7 +19,7 @@
           <RouterLink to="/signin">signin</RouterLink>
         </div>
     </div>
-  </div>
+  <!-- </div> -->
 </div>
 </template>
 
@@ -55,16 +55,22 @@ export default {
 <style scoped>
 .nav {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  background: #333;
+  top: 20%;
+  left: 20%;
+  width: 200px;
+  background: #8294C4;
   padding: 15px 0;
   color: #fff;
+  border-radius: 20px;
 }
 .nav__container div, .nav__container{
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 50px;
+  gap: 40px;
+  height: 500px;
+}
+.last {
+  margin-top: auto;
 }
 </style>

@@ -14,18 +14,18 @@
                         <textarea id="" cols="30" rows="10" placeholder="description" name="description" v-model="description"></textarea>
                     </div>
                     <!-- add -->
-                    <div class="add" @click="add" v-if="!addfield">add img</div>
+                    <div class="add img" @click="add" v-if="!addfield">add img</div>
                     <div class="form__group"  v-if="addfield">
                         <input type="file" v-on:change="previewFile" name="img">
                         <div id="preview" v-html="previewContent"></div>
                         <div class="add" @click="add">cancel</div>
                     </div>
                     <div class="form__group">
-                        <div v-for="(tag, index) in tags" :key="index">
+                        <div v-for="(tag, index) in tags" :key="index" class="flex">
                             <input type="text" name="'tags" :value="tag" @input="updateTag($event, index, tag)">
-                            <button @click.prevent="removeTag(index)">Remove</button>
+                            <button @click.prevent="removeTag(index)" class="add">Remove</button>
                         </div>
-                        <button @click.prevent="addTag()">Add Tag</button>
+                        <button class="add" @click.prevent="addTag()">Add Tag</button>
                     </div>
 
                     <div class="add" @click="add" v-if="!addfield">add click</div>
@@ -39,7 +39,7 @@
                         <div class="add" @click="add">cancel</div>
                     </div>
                     <div class="form__group">
-                        <input type="submit" value="create" @click.prevent="createPost">
+                        <input type="submit" value="create" class="create" @click.prevent="createPost">
                     </div>
                 </form>
                  <div>
@@ -128,4 +128,41 @@ export default {
 }
 </script>
 
-<style></style>
+<style scoped>
+.form__group {
+    margin-bottom: 20px;
+}
+.form__group input, .form__group textarea {
+    border: 1px solid #8294C4;;
+    border-radius: 5px;
+    padding: 5px;
+    resize: vertical;
+    width: 100%;
+    outline: none;
+}
+
+.add {
+    padding: 5px 10px;
+    cursor: pointer;
+    background: #8294C4;;
+    color: #fff;
+    width: fit-content;
+    border-radius: 5px;
+    border: none;
+}
+.add.img {
+    margin-bottom: 20px;
+}
+.create {
+    padding: 10px;
+    cursor: pointer;
+    background: #8294C4;;
+    color: #fff;
+    border-radius: 5px;
+    border: none;
+    margin-top: 20px;
+}
+.flex {
+    display: flex;
+}
+</style>

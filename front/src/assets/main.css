@@ -1,17 +1,16 @@
 @import './base.css';
-
 .title {
-  font-weight: bold;
-  font-size: 50px;
-  margin: 0;
-  margin-bottom: 30px;
+    font-weight: bold;
+    font-size: 50px;
+    margin: 0;
+    margin-bottom: 30px;
 }
 
-.container{
-  width: 700px;
-  margin: 0 auto;
+.container {
+    width: 700px;
+    margin: 0 auto;
 }
 
 .space {
-  margin-top: 100px;
+    margin-top: 50px;
 }

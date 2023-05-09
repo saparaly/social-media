@@ -107,16 +107,13 @@ func (h *Handler) followUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if !alreadyFollowing {
-		// Update the user's following list
 		currentUser.Following = append(currentUser.Following, toFollowId)
-		// Save the updated user information back to the database
 		err = h.services.UpdateUser(*currentUser)
 		if err != nil {
 			return
 		}
 	}
 
-	/**/
 	// Check if the user is already a follower of the target user
 	alreadyFollowed := false
 	for _, id := range toFollowUser.Followers {
@@ -127,10 +124,8 @@ func (h *Handler) followUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if !alreadyFollowed {
-		// Update the user to follow's followers list
 		toFollowUser.Followers = append(toFollowUser.Followers, currentUser.Id)
 		toFollowUser.Id = toFollowId
-		// Save the updated user information back to the database
 		err = h.services.UpdateUser(*toFollowUser)
 		if err != nil {
 			return
@@ -140,7 +135,6 @@ func (h *Handler) followUser(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	response := signUpResponse{
 		Valid: true,
-		// PostId: postId,
 	}
 	json.NewEncoder(w).Encode(response)
 }
@@ -203,18 +197,13 @@ func (h *Handler) unfollowUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if followingIndex != -1 {
-		// Remove the user to unfollow from the following list
-		// fmt.Println(currentUser.Following, "1")
 		currentUser.Following = append(currentUser.Following[:followingIndex], currentUser.Following[followingIndex+1:]...)
-		// Save the updated user information back to the database
-		// fmt.Println(currentUser.Following, "2")
 		err = h.services.UpdateUser(*currentUser)
 		if err != nil {
 			return
 		}
 	}
 
-	// Check if the user is already a follower of the target user
 	followerIndex := -1
 	for i, id := range toUnfollowUser.Followers {
 		if id == currentUser.Id {
@@ -224,9 +213,7 @@ func (h *Handler) unfollowUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if followerIndex != -1 {
-		// Remove the user to unfollow from the followers list
 		toUnfollowUser.Followers = append(toUnfollowUser.Followers[:followerIndex], toUnfollowUser.Followers[followerIndex+1:]...)
-		// Save the updated user information back to the database
 		err = h.services.UpdateUser(*toUnfollowUser)
 		if err != nil {
 			return
@@ -315,8 +302,6 @@ func (h *Handler) followedUsers(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(err)
 			return
 		}
-		fmt.Println(user.Following[i], " user.Following[i]")
-		fmt.Println(user, " one user")
 		users = append(users, *userOne)
 	}
 

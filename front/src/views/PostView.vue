@@ -250,8 +250,6 @@
               'Content-Type': 'application/json'
             }
           })
-          // console.log(response.data)
-          // this.likePost = response.data.isliked
           if (response.status === 200 && response.data.valid) {
           } else{
             this.errorMess = response.data.err
