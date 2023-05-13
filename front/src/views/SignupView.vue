@@ -1,32 +1,45 @@
 <template>
     <div class="signin">
-      <h1 class="title">Sign Up</h1>
-      <p>Connect with Your Peers and Start Your Academic Adventure Now</p>
-      <div class="error">{{ errorMess }}</div>
-      <form action="" >
-        <div class="form__froup">
-          <input type="text" placeholder="role" name="role" v-model="role">
+      <div class="container">
+        <div class="signin__container">
+          <div class="left">
+            <h1 class="title">Sign Up</h1>
+            <p>Connect with Your Peers and Start Your Academic Adventure Now</p>
+          </div>
+          <div class="center">
+            <img src="../assets/img/login.png" alt="">
+          </div>
+          <div class="rigth">
+            <div class="error">{{ errorMess }}</div>
+            <form action="" >
+              <div class="form__froup">
+                <input type="text" placeholder="role" name="role" v-model="role">
+              </div>
+              <div class="form__froup">
+                <input type="text" name="username" placeholder="username" v-model="username">
+              </div>
+              <div class="form__froup">
+                <input type="email" name="email" placeholder="email" v-model="email">
+              </div>
+              <div class="form__froup">
+                <div v-if="!passwordsMatch">Passwords do not match</div>
+              </div>
+              <div class="form__froup">
+                <input type="password" name="password" placeholder="password" v-model="password">
+              </div>
+              <div class="form__froup">
+                <input type="password" placeholder="confirm password" v-model="confirmPassword">
+              </div>
+              <div class="form__froup">
+                <input type="submit" class="btn" value="submit" @click.prevent="signup">
+              </div>
+            </form>
+          </div>
         </div>
-        <div class="form__froup">
-          <input type="text" name="username" placeholder="username" v-model="username">
-        </div>
-        <div class="form__froup">
-          <input type="email" name="email" placeholder="email" v-model="email">
-        </div>
-        <div class="form__froup">
-          <input type="password" name="password" placeholder="password" v-model="password">
-        </div>
-        <div class="form__froup">
-          <input type="password" placeholder="confirm password" v-model="confirmPassword">
-        </div>
-        <div class="form__froup">
-          <div v-if="!passwordsMatch">Passwords do not match</div>
-        </div>
-        <div class="form__froup">
-          <input type="submit" value="submit" @click.prevent="signup">
-        </div>
-      </form>
+        <div class="img"><img src="../assets/img/Background.png" alt=""></div>
+      </div>
     </div>
+
 </template>
 
 <script>
@@ -75,7 +88,75 @@ export default {
 </script>
 
 <style scoped>
-p {
+.img {
+  display: none;
+}
+
+.form__froup {
+  margin-bottom: 20px;
+}
+.form__froup input {
+  border: 1px solid #676767;
+  border-radius: 10px;
+  padding: 10px 20px;
+  font-size: 18px;
+  letter-spacing: 0.09em;
+  color: #4F555A;
+  background: transparent;
+  outline: #4F555A;
+}
+input.btn {
+  width: 100%;
+  background: #4461F2;
+  box-shadow: 0px 12px 21px 4px rgba(68, 97, 242, 0.15);
+  border-radius: 10px;
+  border: none;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  color: #FFFFFF;
+  cursor: pointer;
+  transition: 0.3s;
+}
+input.btn:hover {
+  transform: scale(0.9);
+}
+.left {
+  width: 400px;
+}
+.title{
+  font-weight: 600;
+  font-size: 58px;
+  color: #404040;
+  margin-bottom: 30px;
+}
+p{
+  font-size: 18px;
+  letter-spacing: 0.09em;
+  color: #4F555A;
+}
+.img{
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+
+}
+.img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.signin {
+  /* padding-bottom: 100px; */
+}
+.signin__container {
+  display: flex;
+  align-items: center;
+}
+/* p {
   color: #AB8E91;
   font-weight: bold;
 }
@@ -114,6 +195,6 @@ p {
   left: 0;
   width: 100%;
   height: 100%;
-}
+} */
 </style>
   

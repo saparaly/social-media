@@ -1,11 +1,11 @@
 <template>
 <div class="nav">
-  <!-- <div class="container"> -->
+  <div class="container">
     <div class="nav__container">
-      <RouterLink to="/">Home</RouterLink>
 
       <div v-if="isAuthenticated">
-        <RouterLink to="/create-post">create post</RouterLink>
+      <RouterLink to="/">Home</RouterLink>
+        <!-- <RouterLink to="/create-post">create post</RouterLink> -->
         <RouterLink to="/users">user list</RouterLink>
           <RouterLink to="/userProf">profile</RouterLink>
           <!-- <RouterLink to="/todos">todos</RouterLink>
@@ -19,7 +19,7 @@
           <RouterLink to="/signin">signin</RouterLink>
         </div>
     </div>
-  <!-- </div> -->
+  </div>
 </div>
 </template>
 
@@ -54,23 +54,35 @@ export default {
 
 <style scoped>
 .nav {
-  position: fixed;
+  /* display: none; */
+  /* position: fixed;
   top: 20%;
   left: 20%;
   width: 200px;
-  background: #8294C4;
+  background: var(--primary-color);
   padding: 15px 0;
   color: #fff;
-  border-radius: 20px;
+  border-radius: 20px; */
+  width: 100%;
+  /* background: #333; */
+  margin-bottom: 50px;
+  margin-top: 30px;
+  padding: 10px 0;
 }
 .nav__container div, .nav__container{
   display: flex;
-  flex-direction: column;
   align-items: center;
+  justify-content: right;
   gap: 40px;
-  height: 500px;
 }
 .last {
   margin-top: auto;
+}
+
+a{
+  transition: 0.3s;
+}
+a:hover {
+  color: #4461F2;
 }
 </style>

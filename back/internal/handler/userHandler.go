@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 
 	"github.com/saparaly/forum/models"
 )
@@ -346,6 +347,49 @@ func (h *Handler) profile(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 		return
 	}
+
+	w.WriteHeader(http.StatusOK)
+	response := signUpResponse{
+		Valid:        true,
+		User:         *user,
+		CreatedPosts: userPost,
+		LikedPosts:   userLikedPosts,
+	}
+	json.NewEncoder(w).Encode(response)
+}
+
+func (h *Handler) user(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "OPTIONS" {
+		w.Header().Set("Access-Control-Allow-Origin", allowedOrigin)
+		w.Header().Set("Access-Control-Allow-Methods", "GET")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		w.Header().Set("Access-Control-Allow-Credentials", "true")
+		return
+	}
+	w.Header().Set("Access-Control-Allow-Origin", allowedOrigin)
+	w.Header().Set("Access-Control-Allow-Credentials", "true")
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+
+	id, err := strconv.Atoi(r.URL.Query().Get("id"))
+	if err != nil {
+		fmt.Println(err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	userPost, err := h.services.GetUserCreatedPosts(id)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	userLikedPosts, err := h.services.GetLikedPosts(id)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	user, err := h.services.GetUserById(id)
 
 	w.WriteHeader(http.StatusOK)
 	response := signUpResponse{

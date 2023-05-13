@@ -1,12 +1,41 @@
 <template>
-<div class="space"></div>
+<!-- <div class="space"></div> -->
 <div class="users__posts">
     <div class="container">
+      <div class="users__posts-container">
+        <div class="left">
+        <div class="users">
+          <p>recommended users:</p>
+          <div class="user">
+            <RouterLink to="/">Assel - <span>vue.js, golang</span></RouterLink>
+            <RouterLink to="/">Sanzhar - <span>golang, python</span></RouterLink>
+            <RouterLink to="/">Ruslan - <span>sql, flutter</span></RouterLink>
+          </div>
+          <p>search for user</p>
+          <div class="group serch">
+            <input type="text" name="" id="">
+            <button>search</button>
+          </div>
+          <div class="user">
+            <p>here you will see result</p>
+          </div>
+        </div>
+        <div class="users fit">
+          <RouterLink to="/create-post">create post</RouterLink>
+          <RouterLink to="/userprof">my posts</RouterLink>
+          <RouterLink to="/userprof">liked posts</RouterLink>
+        </div>
+        </div>
         <div class="posts">
             <div class="post" v-for="post in posts" :key="post.id">
-                <div class="small">created at {{ post.created }} by {{  post.postuserrole }} <span>@{{ post.postusername }}</span></div>
+                <div class="small">
+                  created at {{ formatDate(post.created) }} by {{  post.postuserrole }} 
+                  <RouterLink :to="'/user/' + post.userId" class="click">
+                    <span>@{{ post.postusername }}</span>
+                  </RouterLink>
+                </div>
               <div class="img" v-if="post.img"><img :src="post.img" alt=""></div>
-                <RouterLink :to="'/post/' + post.id" class="postTitle"> {{ post.title }}</RouterLink>
+                <RouterLink :to="'/post/' + post.id" class="title"> {{ post.title }}</RouterLink>
                 <p class="desc"> {{ post.description }}</p>
                   <div class="tags" v-if="post.tags.length > 1">
                     <div class="tag" v-for="tag in post.tags">
@@ -14,7 +43,17 @@
                     </div>
                   </div>
                   <div class="rightSide">
-                  <p class="small" v-if=" post.date || post.location">data: {{ post.date }}, location: {{ post.location }}</p>
+                  <p class="small flex" v-if=" post.date || post.location">
+                    <span>
+                      <svg version="1.0" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="800px" height="800px" viewBox="0 0 64 64" enable-background="new 0 0 64 64" xml:space="preserve">
+                        <g>
+                          <path fill="#394240" d="M31.998,2.478c0.279,0,0.463,0.509,0.463,0.509l8.806,18.759l20.729,3.167l-14.999,15.38l3.541,21.701   l-18.54-10.254l-18.54,10.254l3.541-21.701L2,24.912l20.729-3.167l8.798-18.743C31.527,3.002,31.719,2.478,31.998,2.478 M31.998,0   c-0.775,0-1.48,0.448-1.811,1.15l-8.815,18.778L1.698,22.935c-0.741,0.113-1.356,0.632-1.595,1.343   c-0.238,0.71-0.059,1.494,0.465,2.031l14.294,14.657L11.484,61.67c-0.124,0.756,0.195,1.517,0.822,1.957   c0.344,0.243,0.747,0.366,1.151,0.366c0.332,0,0.666-0.084,0.968-0.25l17.572-9.719l17.572,9.719   c0.302,0.166,0.636,0.25,0.968,0.25c0.404,0,0.808-0.123,1.151-0.366c0.627-0.44,0.946-1.201,0.822-1.957l-3.378-20.704   l14.294-14.657c0.523-0.537,0.703-1.321,0.465-2.031c-0.238-0.711-0.854-1.229-1.595-1.343l-19.674-3.006L33.809,1.15   C33.479,0.448,32.773,0,31.998,0L31.998,0z"/>
+                          <path fill="#F9EBB2" d="M31.998,2.478c0.279,0,0.463,0.509,0.463,0.509l8.806,18.759l20.729,3.167l-14.999,15.38l3.541,21.701   l-18.54-10.254l-18.54,10.254l3.541-21.701L2,24.912l20.729-3.167l8.798-18.743C31.527,3.002,31.719,2.478,31.998,2.478"/>
+                        </g>
+                      </svg>
+                    </span>
+                    data: {{ post.date }}, location: {{ post.location }}
+                  </p>
                   <div class="reaction">
                     <div class="react" :class="{liked: post.isliked }">
                   <form action="">
@@ -36,6 +75,43 @@
                 </div>
             </div>
         </div>
+        <div class="right">
+        <div class="filters">
+          <div>
+            <p>filter posts by popular tag</p>
+            <div class="items">
+              <div class="group">aitu</div>
+              <div class="group">prototypes</div>
+              <div class="group">javascript</div>
+              <div class="group">golang</div>
+              <div class="group">typescript</div>
+            </div>
+          </div>
+
+          <div>
+            <p>search by tag</p>
+            <div class="group serch">
+              <input type="text" name="" id="">
+              <button>search</button>
+            </div>
+          </div>
+
+          <div>
+            <p>filter post by date</p>
+            <div class="items">
+              <div class="group">lates</div>
+              <div class="group">oldest</div>
+            </div>
+          </div>
+
+          <div>
+            <p>filter post by star</p>
+            <div class="group">post with start</div>
+          </div>
+
+        </div>
+        </div>
+      </div>
     </div>
 </div>
 </template>
@@ -91,22 +167,175 @@ export default {
       dislikePost(postid) {
         this.postReaction('dislike', postid)
       },
+      formatDate(dateString) {
+        const date = new Date(dateString);
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const year = date.getFullYear().toString().slice(2);
+        const hours = date.getHours().toString().padStart(2, '0');
+        const minutes = date.getMinutes().toString().padStart(2, '0');
+        const seconds = date.getSeconds().toString().padStart(2, '0');
+
+        return `${day}.${month}.${year} ${hours}:${minutes}:${seconds}`;
+      }
     }
 }
 </script>
 
 <style scoped>
+.filters {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.items {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 10px;
+  margin-bottom: 20px;
+}
+.items .group:nth-child(3n) {
+grid-column: span 2 / auto;
+}
+.filters .group {
+  background: var(--primary-color);
+  color: #fff;
+  padding: 6px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.2s;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.filters .group.serch{
+  background: none;
+  padding: 0;
+  margin-bottom: 20px;
+}
+.user p {
+  margin-top: 20px;
+}
+.group {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+.serch{
+  border: 1px solid #676767;
+  border-radius: 10px;
+  font-size: 18px;
+  letter-spacing: 0.09em;
+  color: #4F555A;
+  background: transparent;
+  width: 100%;
+}
+.serch input{
+  width: 100%;
+  border: none;
+  padding: 5px 10px;
+  background: transparent;
+}
+.serch button {
+  background: var(--primary-color);
+  color: #fff;
+  font-weight: 600;
+  padding: 6px 10px;
+  border: none;
+  border-radius: 10px;
+  margin-top: -1px;
+  margin-right: -1px;
+  margin-bottom: -1px;
+  cursor: pointer;
+  transition: 0.2s;
+  border: 1px solid var(--primary-color);
+}
+.serch button:hover {
+  background: #fff;
+  color: var(--primary-color);
+  border: 1px solid #676767;
+}
+.users p, .filters p{
+  font-size: 16px;
+  letter-spacing: 0.09em;
+  color: #4F555A;
+  margin-bottom: 20px;
+}
+.user {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.user a {
+  color: var(--primary-color);
+  font-weight: bold;
+  transition: 0.2s;
+}
+.user a:hover {
+  color: var(--pink);
+}
+.user a span {
+  font-weight: 500;
+}
+.group {
+
+}
+.users__posts-container{
+  display: flex;
+  gap: 50px;
+}
+.filters, .users {
+  width: 300px;
+  flex-shrink: 0;
+  background: #fff;
+  border-radius: 20px;
+  padding: 30px;
+  height: 500px;
+  margin-bottom: 20px;
+}
+.users {
+  height: 400px;
+}
+.users.fit a{
+  display: inline-block;
+  padding: 10px 20px;
+  border-radius:10px ;
+  background: var(--primary-color);
+  text-align: center;
+  color: #fff;
+}
+.users.fit {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.fit{
+
+  height: fit-content;
+}
+.users__posts {
+  margin-bottom: 100px;
+}
+.click {
+  cursor: pointer;
+}
+/* .posts {
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  grid-gap: 20px;
+} */
 .post {
-  background: #ACB1D6;
+  background: #fff;
   padding: 20px;
   border-radius: 20px;
-  margin-bottom: 30px;
-  gap: 20px;
+  margin-bottom: 20px;
 }
 
 .img{
   width: 100%;
-  height: 300px;
+  height: 400px;
   border-radius: 20px;
   overflow: hidden;
   flex-shrink: 0;
@@ -124,23 +353,32 @@ export default {
 }
 
 .small {
-  color: #fff;
+
+  color: #4F555A;
   font-size: 14px;
 }
 .small span {
   font-weight: bold;
-  color: #655DBB;
+  color: var(--pink);
 }
-
-.postTitle{
+.flex {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.small svg {
+  width: 20px;
+  height: 20px;
+}
+.title{
   font-size: 40px;
   text-transform: capitalize;
-  font-weight: bold;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   transition: all 0.15s;
+  display: inline-block;
 }
-.postTitle:hover {
-  color: #655DBB;
+.title:hover {
+  color: var(--primary-color);
 }
 
 .desc {
@@ -155,7 +393,7 @@ export default {
   margin-bottom: 20px;
 }
 .tag{
-  background: #8294C4;
+  background: var(--primary-color);
   border-radius: 10px;
   padding: 5px 10px;
 }
@@ -181,10 +419,10 @@ export default {
   transition: all 0.15s ease;
 }
 .react:hover svg path, .liked  svg path{
-  fill: #5d54a4;
+  fill: var(--pink);
 }
 .react:hover, .liked {
-  color: #5d54a4;
+  color: var(--pink);
 }
 .react svg {
   width: 100%;

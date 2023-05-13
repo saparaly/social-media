@@ -1,31 +1,39 @@
 <template>
-  <div class="oneContainer">
-    <div class="signin">
-      <h1 class="title">Sign In</h1>
-      <div class="form__froup">
-        <p>Stay Informed and Sign In to Your University Account</p>
-        <div class="error">{{ errorMess }}</div>
+  <div class="signin">
+      <div class="container">
+        <div class="signin__container">
+          <div class="left">
+            <div class="signup">
+              <h2 class="title">Unlock Your Access, Sign Up Now</h2>
+              <p>Join the Community, Join the Conversation</p>
+              <RouterLink to="/signup">signup</RouterLink>
+            </div>
+          </div>
+          <div class="center">
+            <img src="../assets/img/login.png" alt="">
+          </div>
+          <div class="right">
+          <div class="form__froup">
+            <p>Stay Informed and Sign In to Your University Account</p>
+            <div class="error">{{ errorMess }}</div>
+          </div>
+          <form action="" >
+            <div class="form__froup">
+              <input type="text" name="username" placeholder="username" v-model="username">
+            </div>
+            <div class="form__froup">
+              <input type="password" name="password" placeholder="password" v-model="password">
+            </div>
+            <div class="form__froup">
+              <input type="submit" value="submit" @click.prevent="signin">
+            </div>
+          </form>
+          </div>
+        </div>
+        <div class="img"><img src="../assets/img/Background.png" alt=""></div>
+
       </div>
-      <form action="" >
-        <div class="form__froup">
-          <input type="text" name="username" placeholder="username" v-model="username">
-        </div>
-        <div class="form__froup">
-          <input type="password" name="password" placeholder="password" v-model="password">
-        </div>
-        <div class="form__froup">
-          <input type="submit" value="submit" @click.prevent="signin">
-        </div>
-      </form>
-    </div>
-    <div class="signup">
-      <h2 class="title">Unlock Your Access, Sign Up Now</h2>
-      <p>Join the Community, Join the Conversation</p>
-      <RouterLink to="/signup">signup</RouterLink>
-      <img src="https://img.freepik.com/free-vector/minimalist-white-background_23-2148811075.jpg" alt="">
-    </div>
   </div>
-  <!-- <img class="test" src="https://tengrinews.kz/userdata/news/2019/news_373823/thumb_m/photo_286410.png" alt=""> -->
 </template>
 
 <script>
@@ -64,10 +72,73 @@ methods: {
 </script>
 
 <style scoped>
+.img {
+  display: none;
+}
 .error {
   color: red;
 }
-.form__froup p {
+
+.form__froup {
+  margin-bottom: 20px;
+}
+.form__froup input {
+  border: 1px solid #676767;
+  border-radius: 10px;
+  padding: 10px 20px;
+  font-size: 18px;
+  letter-spacing: 0.09em;
+  color: #4F555A;
+  background: transparent;
+  outline: #4F555A;
+}
+input.btn {
+  width: 100%;
+  background: #4461F2;
+  box-shadow: 0px 12px 21px 4px rgba(68, 97, 242, 0.15);
+  border-radius: 10px;
+  border: none;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  color: #FFFFFF;
+  cursor: pointer;
+  transition: 0.3s;
+}
+input.btn:hover {
+  transform: scale(0.9);
+}
+.left {
+  width: 600px;
+}
+
+p{
+  font-size: 18px;
+  letter-spacing: 0.09em;
+  color: #4F555A;
+}
+.img{
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+
+}
+.img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.signin {
+  /* padding-bottom: 100px; */
+}
+.signin__container {
+  display: flex;
+  align-items: center;
+}
+/* .form__froup p {
   margin-bottom: 10px;
 }
 .test{
@@ -150,5 +221,5 @@ color: #FFF;
   position: absolute;
   z-index: -1;
 
-}
+} */
 </style>

@@ -1,5 +1,5 @@
 <template>
-    <div class="space"></div>
+    <!-- <div class="space"></div> -->
     <div class="post">
       <div class="container">
         <p>{{ errorMessage }}</p>
@@ -28,15 +28,19 @@
             <div class="small">{{ post.created }}</div>
           </div>
 
+<div class="flex">
           <div class="img" v-if="post.img">
             <img :src="post.img" alt="">
           </div>
-          <div class="desc"> {{ post.description }} </div>
-          <div class="tags" v-if="post.tags">
-            <span v-for="tag in post.tags">
-              {{ tag }}
-            </span>
+          <div class="flex-c">
+            <div class="desc"> {{ post.description }} </div>
+            <div class="tags" v-if="post.tags">
+              <span v-for="tag in post.tags">
+                {{ tag }}
+              </span>
+            </div>
           </div>
+</div>
           <div class="username">created by <span>{{postuserrole}}</span> @{{ usernamepost }}</div>
 
           <div class="reaction">
@@ -98,7 +102,7 @@
           <div class="create-comment">
             <form>
               <textarea v-model="commentContent" name="text" cols="30" rows="10" placeholder="Write your comment here"></textarea>
-              <button @click.prevent="createComment">Post Comment</button>
+              <button @click.prevent="createComment">comment</button>
             </form>
           </div>
           <div class="comments">
@@ -327,6 +331,15 @@
   </script>
 
 <style scoped>
+.flex {
+  display: flex;
+  gap: 50px;
+}
+.flex-c{
+  display: flex;
+  flex-direction: column;
+justify-content: space-between;
+}
 .comments {
   margin-top: 40px;
   display: flex;
@@ -394,41 +407,42 @@
 .create-comment form {
   width: 100%;
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
+  /* flex-direction: column; */
   gap: 10px;
+  border: 1px solid #676767;
+    border-radius: 10px;
 }
 
 .create-comment textarea {
   border: none;
   padding: 15px;
-  background-color: #f5f5f5;
-  font-family: 'Roboto', sans-serif;
+  /* background-color: #f5f5f5; */
   font-size: 16px;
   border-radius: 5px;
   resize: none;
-  height: 150px;
-}
-
-.create-comment textarea:focus {
-  outline: none;
-  box-shadow: 0 0 0 2px #2196f3;
+  height: 50px;
+  width: 100%;
 }
 
 .create-comment button {
+  background: var(--primary-color);
+  box-shadow: 0px 12px 21px 4px rgba(68, 97, 242, 0.15);
+  border-radius: 10px;
   border: none;
-  background-color: #2196f3;
-  color: white;
-  padding: 10px 16px;
-  text-align: center;
-  text-decoration: none;
-  font-size: 16px;
-  font-weight: bold;
-  border-radius: 5px;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  color: #FFFFFF;
   cursor: pointer;
+  transition: 0.3s;
+  padding: 10px 18px;
+margin-right: -2px;
+margin-top: -1px;
+margin-bottom: -1px;
 }
 
 .create-comment button:hover {
-  background-color: #1976d2;
+  background: #0f2051;
 }
 
 /*  */
@@ -550,10 +564,10 @@ input, textarea {
   text-align: right;
 }
 .img {
-  width: 100%;
+  width: 600px;
   height: 400px;
   border: 5px solid;
-
+  flex-shrink: 0;
 }
 .img img {
   width: 100%;
@@ -561,7 +575,7 @@ input, textarea {
   object-fit: cover;
 }
 .desc, .tags {
-  margin-top: 20px;
+  /* margin-top: 20px; */
 }
 .tags{
   display: flex;
