@@ -33,13 +33,21 @@
         <div class="img"><img src="../assets/img/Background.png" alt=""></div>
 
       </div>
+      <!-- <ChatView 
+          v-bind:username="username"
+          v-bind:secret="password" 
+       /> -->
   </div>
 </template>
 
 <script>
 import axios from 'axios'
+import { loginRest, signupRest } from "./api";
+
+import ChatView from './ChatView.vue';
 
 export default {
+  components: {ChatView},
   data() {
     return {
       username: '',
@@ -54,11 +62,15 @@ methods: {
         username: this.username,
         password: this.password,
       },{
-        withCredentials: true
+        withCredentials: true,
+        headers: {
+                        'Content-Type': 'application/json'
+                    }
       })
       // con sole.log(response.data)
       console.log(response.data.valid)
         if (response.status === 200 && response.data.valid) {
+          this.chatLogin();
           this.$router.push('/')
         } else{
           this.errorMess = response.data.err
@@ -66,7 +78,15 @@ methods: {
     } catch (error) {
       console.log(error)
     }
-  }
+  },
+  chatLogin() {
+        loginRest(this.username, this.password)
+          .then((response) =>
+            this.$emit("onAuth", { ...response.data, secret: this.password })
+          )
+          .catch((error) => console.log("Login error", error));
+      },
+      
 },
 }
 </script>

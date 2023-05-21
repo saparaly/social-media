@@ -1,7 +1,6 @@
 <template>
     <!-- <div class="space"></div> -->
     <div class="container">
-      <!-- {{ user }} -->
       <div class="user">
         <p>{{ user.role }}</p>
         <p>@{{ user.username }}</p>
@@ -113,6 +112,7 @@
           this.user = usersResponse.data.user
           this.posts = usersResponse.data.createdpost
           this.likedposts = usersResponse.data.likedpost
+          console.log(usersResponse.data.user)
   
         } catch (error) {
           console.log(error); 

@@ -52,6 +52,7 @@ func (r *PostRepo) CreatePost(post models.Post) (int64, error) {
 }
 
 func (r *PostRepo) GetPost(postId int) (models.Post, error) {
+
 	stmt, err := r.db.Prepare("SELECT id, userId, username, role, title, img, description, tags, created, date, location, like, dislike FROM post WHERE id = ?")
 	if err != nil {
 		return models.Post{}, err

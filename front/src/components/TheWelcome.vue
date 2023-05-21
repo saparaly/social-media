@@ -3,7 +3,7 @@
 <div class="users__posts">
     <div class="container">
       <div class="users__posts-container">
-        <div class="left">
+        <div class="left wow slideInLeft">
         <div class="users">
           <p>recommended users:</p>
           <div class="user">
@@ -26,8 +26,8 @@
           <RouterLink to="/userprof">liked posts</RouterLink>
         </div>
         </div>
-        <div class="posts">
-            <div class="post" v-for="post in posts" :key="post.id">
+        <div class="posts" v-if="posts">
+            <div  class="post" v-for="post in posts" :key="post.id">
                 <div class="small">
                   created at {{ formatDate(post.created) }} by {{  post.postuserrole }} 
                   <RouterLink :to="'/user/' + post.userId" class="click">
@@ -74,6 +74,9 @@
                   </div>
                 </div>
             </div>
+        </div>
+        <div class="posts" v-else>
+          no post
         </div>
         <div class="right">
         <div class="filters">
@@ -122,7 +125,8 @@ export default {
     name: 'Home',
     data() {
         return {
-            posts: []
+            posts: [],
+            id: 0
         }
     },
     async mounted() {
@@ -183,6 +187,7 @@ export default {
 </script>
 
 <style scoped>
+
 .filters {
   display: flex;
   flex-direction: column;
@@ -198,8 +203,11 @@ export default {
 grid-column: span 2 / auto;
 }
 .filters .group {
-  background: var(--primary-color);
-  color: #fff;
+  /* background: var(--primary-color);
+  color: #fff; */
+  background: var(--bg);
+  color: var(--text-color);
+  border: 1px solid  var(--text-color);
   padding: 6px;
   border-radius: 10px;
   cursor: pointer;
@@ -269,7 +277,8 @@ grid-column: span 2 / auto;
   margin-bottom: 20px;
 }
 .user a {
-  color: var(--primary-color);
+  color: var( --dark);
+
   font-weight: bold;
   transition: 0.2s;
 }
@@ -284,6 +293,7 @@ grid-column: span 2 / auto;
 }
 .users__posts-container{
   display: flex;
+  justify-content: space-between;
   gap: 50px;
 }
 .filters, .users {
@@ -294,6 +304,7 @@ grid-column: span 2 / auto;
   padding: 30px;
   height: 500px;
   margin-bottom: 20px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, .1), 0 10px 10px -5px rgba(0, 0, 0, .04);
 }
 .users {
   height: 400px;
@@ -302,9 +313,12 @@ grid-column: span 2 / auto;
   display: inline-block;
   padding: 10px 20px;
   border-radius:10px ;
-  background: var(--primary-color);
   text-align: center;
-  color: #fff;
+  /* background: var(--primary-color);
+  color: #fff; */
+  background: var(--bg);
+color: var(--text-color);
+border: 1px solid var(--text-color);
 }
 .users.fit {
   display: flex;
@@ -331,6 +345,7 @@ grid-column: span 2 / auto;
   padding: 20px;
   border-radius: 20px;
   margin-bottom: 20px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, .1), 0 10px 10px -5px rgba(0, 0, 0, .04);
 }
 
 .img{
@@ -344,7 +359,7 @@ grid-column: span 2 / auto;
 .img img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
 }
 .rightSide{
   display: flex;
@@ -359,7 +374,7 @@ grid-column: span 2 / auto;
 }
 .small span {
   font-weight: bold;
-  color: var(--pink);
+  color: var(--dark);
 }
 .flex {
   display: flex;
@@ -393,7 +408,8 @@ grid-column: span 2 / auto;
   margin-bottom: 20px;
 }
 .tag{
-  background: var(--primary-color);
+  background: var(--bg);
+  color: var(--text-color);
   border-radius: 10px;
   padding: 5px 10px;
 }
@@ -419,10 +435,10 @@ grid-column: span 2 / auto;
   transition: all 0.15s ease;
 }
 .react:hover svg path, .liked  svg path{
-  fill: var(--pink);
+  fill: var(--dark);
 }
 .react:hover, .liked {
-  color: var(--pink);
+  color: var(--dark);
 }
 .react svg {
   width: 100%;

@@ -328,7 +328,7 @@ func (h *Handler) profile(w http.ResponseWriter, r *http.Request) {
 
 	user, err := h.GetUserByToken(w, r)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println(err, "123")
 		response := signUpResponse{
 			Valid: false,
 		}
@@ -338,16 +338,17 @@ func (h *Handler) profile(w http.ResponseWriter, r *http.Request) {
 
 	userPost, err := h.services.GetUserCreatedPosts(user.Id)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println(err, "321")
 		return
 	}
 
 	userLikedPosts, err := h.services.GetLikedPosts(user.Id)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println(err, "333")
 		return
 	}
 
+	fmt.Println(user)
 	w.WriteHeader(http.StatusOK)
 	response := signUpResponse{
 		Valid:        true,

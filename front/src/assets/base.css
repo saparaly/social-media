@@ -5,10 +5,19 @@ html {
 }
 
 :root {
-    --primary-color: #6d9ba4;
+    /* --primary-color: #6d9ba4; */
+    --primary-color: #667eea;
+    --text-color: #4c51bf;
+    --bg: #f3f4ff;
+    --dark: #38416f;
     --green: #6d9ba4;
     --pink: #bf8594;
     --yellow: #efcb8a;
+}
+
+input,
+textarea {
+    outline: none;
 }
 
 *,
@@ -63,8 +72,9 @@ body {
     text-rendering: optimizeSpeed;
     font-size: 18px;
     /* color: #485680; */
-    background: #F6F6F6;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    /* background: #F6F6F6; */
+    background: #f7fafc;
+    /* box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); */
 }
 
 .container {

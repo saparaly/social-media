@@ -20,6 +20,7 @@
 .title {
     font-weight: 600;
     font-size: 58px;
-    color: #404040;
+    /* color: #404040; */
+    color: #4c51bf;
     margin-bottom: 30px;
 }

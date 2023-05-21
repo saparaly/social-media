@@ -220,6 +220,7 @@ func (r *UserRepo) GetLikedPosts(id int) ([]models.Post, error) {
 	// Get the IDs of all posts that have been liked by the user
 	rows, err := r.db.Query("SELECT postId FROM post_likes WHERE userId = $1", id)
 	if err != nil {
+		fmt.Println("222")
 		return nil, err
 	}
 	defer rows.Close()
@@ -232,12 +233,15 @@ func (r *UserRepo) GetLikedPosts(id int) ([]models.Post, error) {
 		var postID int
 		err := rows.Scan(&postID)
 		if err != nil {
+			fmt.Println(444)
 			return nil, err
 		}
 
 		// Use the Get method to get the post by its ID
+		fmt.Println(postID, " [post]")
 		post, err := r.GetPost(postID)
 		if err != nil {
+			fmt.Println(999)
 			return nil, err
 		}
 
@@ -247,6 +251,7 @@ func (r *UserRepo) GetLikedPosts(id int) ([]models.Post, error) {
 	// Check for any errors that occurred while iterating through the rows
 	err = rows.Err()
 	if err != nil {
+		fmt.Println(666)
 		return nil, err
 	}
 

@@ -11,7 +11,7 @@
           </div>
           <div class="rigth">
             <div class="error">{{ errorMess }}</div>
-            <form action="" >
+            <form action="">
               <div class="form__froup">
                 <input type="text" placeholder="role" name="role" v-model="role">
               </div>
@@ -44,6 +44,8 @@
 
 <script>
 import axios from 'axios'
+import { loginRest, signupRest } from "./api";
+
 
 export default {
     data() {
@@ -69,6 +71,7 @@ export default {
         console.log(response.data)
         if (response.status === 200 && response.data.valid) {
           // redirect to signin page
+          this.chatSignup();
           this.$router.push('/signin')
         } else{
           this.errorMess = response.data.err
@@ -77,7 +80,18 @@ export default {
       } catch (error) {
         console.log(error)
       }
-    }
+    },
+    chatSignup() {
+        signupRest(
+          this.username,
+          this.password,
+          this.email,
+        )
+          .then((response) =>
+            this.$emit("onAuth", { ...response.data, secret: this.password })
+          )
+          .catch((error) => console.log("Sign up error", error));
+      },
   },
   computed: {
     passwordsMatch() {

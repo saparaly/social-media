@@ -28,19 +28,19 @@
             <div class="small">{{ post.created }}</div>
           </div>
 
-<div class="flex">
-          <div class="img" v-if="post.img">
-            <img :src="post.img" alt="">
+          <div class="flex">
+                    <div class="img" v-if="post.img">
+                      <img :src="post.img" alt="">
+                    </div>
+                    <div class="flex-c">
+                      <div class="desc"> {{ post.description }} </div>
+                      <div class="tags" v-if="post.tags">
+                        <span v-for="tag in post.tags">
+                          {{ tag }}
+                        </span>
+                      </div>
+                    </div>
           </div>
-          <div class="flex-c">
-            <div class="desc"> {{ post.description }} </div>
-            <div class="tags" v-if="post.tags">
-              <span v-for="tag in post.tags">
-                {{ tag }}
-              </span>
-            </div>
-          </div>
-</div>
           <div class="username">created by <span>{{postuserrole}}</span> @{{ usernamepost }}</div>
 
           <div class="reaction">
@@ -99,6 +99,7 @@
             <RouterLink to="/">ok</RouterLink>
           </div>
 
+        </div>
           <div class="create-comment">
             <form>
               <textarea v-model="commentContent" name="text" cols="30" rows="10" placeholder="Write your comment here"></textarea>
@@ -107,7 +108,6 @@
           </div>
           <div class="comments">
             <div v-for="comment in comments" :key="comment.id" class="comment">
-              {{ comment.id }}
               <div class="username">commented by <span>{{ comment.commentuserrole}}</span> @{{ comment.commentusername}}</div>
               <p class="text">{{ comment.text }}</p>
               <div class="reactions-to-comment">
@@ -116,7 +116,6 @@
               </div>
             </div>
           </div>
-        </div>
       </div>
     </div>
 </template>
@@ -331,6 +330,16 @@
   </script>
 
 <style scoped>
+.title {
+  color: var(--dark);
+}
+.post__container {
+  background: #fff;
+  padding: 20px;
+  border-radius: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, .1), 0 10px 10px -5px rgba(0, 0, 0, .04);
+}
 .flex {
   display: flex;
   gap: 50px;
@@ -346,20 +355,18 @@ justify-content: space-between;
   flex-direction: column;
   align-items: center;
 }
-
+input, textarea{
+  outline: none;
+}
 .comment {
   margin-top: 20px;
   padding: 20px;
-  background-color: #fff;
-  border-radius: 10px;
   width: 100%;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.comment:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  background: transparent;
+  border-radius: 10px;
+  border: 1px solid #0f2051;
 }
 
 .username {
@@ -489,10 +496,22 @@ margin-bottom: -1px;
   gap: 20px;
   width: 400px;
   padding: 30px;
-  background: #8593bd;
+  background: #fff;
   border-radius: 20px;
   text-align: center;
   z-index: 100;
+  border: 1px solid var(--dark);
+}
+.desc {
+  margin-bottom: 20px;
+}
+p.edited {
+  background:  var(--dark);
+  color: #fff;
+  font-weight: bold;
+  font-size: 30px;
+  width: 100%;
+  border-radius: 0;
 }
 input, textarea {
   background: transparent;
@@ -566,7 +585,6 @@ input, textarea {
 .img {
   width: 600px;
   height: 400px;
-  border: 5px solid;
   flex-shrink: 0;
 }
 .img img {
@@ -583,10 +601,10 @@ input, textarea {
   gap: 10px;
 }
 .tags span{
-  border-radius: 10px;
-  background: #8593bd;
-  color: #0f2051;
-  padding: 5px 10px;
+  background: var(--bg);
+color: var(--text-color);
+border-radius: 10px;
+padding: 5px 10px;
 }
 .post {
   margin-bottom: 100px;
