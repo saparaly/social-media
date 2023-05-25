@@ -463,6 +463,7 @@ margin-bottom: -1px;
   display: flex;
   align-items: center;
   transition: all 0.15s ease;
+  gap: 5px;
 }
 .react button {
   width: 30px;
@@ -590,7 +591,7 @@ input, textarea {
 .img img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
 }
 .desc, .tags {
   /* margin-top: 20px; */

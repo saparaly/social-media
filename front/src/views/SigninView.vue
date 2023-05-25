@@ -25,7 +25,7 @@
               <input type="password" name="password" placeholder="password" v-model="password">
             </div>
             <div class="form__froup">
-              <input type="submit" value="submit" @click.prevent="signin">
+              <input type="submit" class="btn" value="submit" @click.prevent="signin">
             </div>
           </form>
           </div>
@@ -42,7 +42,7 @@
 
 <script>
 import axios from 'axios'
-import { loginRest, signupRest } from "./api";
+// import { loginRest, signupRest } from "./api";
 
 import ChatView from './ChatView.vue';
 
@@ -70,7 +70,7 @@ methods: {
       // con sole.log(response.data)
       console.log(response.data.valid)
         if (response.status === 200 && response.data.valid) {
-          this.chatLogin();
+          // this.chatLogin();
           this.$router.push('/')
         } else{
           this.errorMess = response.data.err
@@ -92,6 +92,12 @@ methods: {
 </script>
 
 <style scoped>
+.title{
+  font-weight: 600;
+  font-size: 58px;
+  color: #404040;
+  margin-bottom: 30px;
+}
 .img {
   display: none;
 }
@@ -111,6 +117,7 @@ methods: {
   color: #4F555A;
   background: transparent;
   outline: #4F555A;
+  width: 100%;
 }
 input.btn {
   width: 100%;

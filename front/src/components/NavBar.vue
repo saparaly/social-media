@@ -1,25 +1,26 @@
 <template>
-<div class="nav">
-  <div class="bg"></div>
-  <div class="container">
+<div :class="['nav', { 'hidden': shouldHideBackground }]">
+  <!-- <div class="bg"></div> -->
+  <div :class="['bg', { 'hidden': shouldHideBackground }]"></div>
+    <div class="container">
     <div class="nav__container">
       <a href="/" class="logo">
       AITUSTACK
       </a>
       <div v-if="isAuthenticated">
       <RouterLink to="/" exact-active-class="active">Home</RouterLink>
-        <RouterLink to="/users" exact-active-class="active">user list</RouterLink>
-          <RouterLink to="/userProf" exact-active-class="active">profile</RouterLink>
-          <RouterLink to="/chat">chat</RouterLink>
-          <RouterLink class="last" to="/logout" @click.prevent="logout">logout</RouterLink>
+        <RouterLink to="/users" exact-active-class="active">Users</RouterLink>
+          <RouterLink to="/userProf" exact-active-class="active">Profile</RouterLink>
+          <RouterLink to="/chat">Chat</RouterLink>
+          <RouterLink class="last" to="/logout" @click.prevent="logout">Logout</RouterLink>
         <!-- <RouterLink to="/create-post">create post</RouterLink> -->
           <!-- <RouterLink to="/todos">todos</RouterLink>
           <RouterLink to="/post/">my post</RouterLink> -->
         </div>
 
         <div v-else>
-          <RouterLink to="/signup" exact-active-class="active">signup</RouterLink>
-          <RouterLink to="/signin" exact-active-class="active">signin</RouterLink>
+          <RouterLink to="/signup" exact-active-class="active">Signup</RouterLink>
+          <RouterLink to="/signin" exact-active-class="active">Signin</RouterLink>
         </div>
     </div>
   </div>
@@ -36,8 +37,12 @@ export default {
     isAuthenticated() {
       const token = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*\=\s*([^;]*).*$)|^.*$/, "$1");
       return token !== "";
+    },
+    shouldHideBackground() {
+      const currentRoute = this.$route.path;
+      const pagesToHideBackground = ['/signup', '/signin', '/create-post', '/chat'];
+      return pagesToHideBackground.includes(currentRoute);
     }
-
   },
   methods: {
     async logout() {
@@ -56,6 +61,13 @@ export default {
 </script>
 
 <style scoped>
+/* .nav.hidden a{
+  color: #3e404b;
+} */
+  .bg.hidden {
+    /* display: none; */
+    height: 132px;
+  }
 .active {
   font-weight: bold;
   position: relative;
@@ -69,6 +81,10 @@ export default {
   height: 5px;
   border-radius: 50%;
   background: #fff;
+}
+
+.nav.hidden a.active::before{
+  background: #3e404b;
 }
 .logo {
   display: inline;
@@ -113,9 +129,6 @@ export default {
   font-weight: bold;
   font-size: 25px;
 }
-  .hidden {
-    display: none;
-  }
 .bg {
   background: var( --dark);
 height: 400px;

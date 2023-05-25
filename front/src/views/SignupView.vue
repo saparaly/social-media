@@ -57,8 +57,15 @@ export default {
         password: '',
         confirmPassword: '',
         errorMess: '',
+        
+        first_name: "",
+        last_name: "",
       }
     },
+    mounted() {
+  this.first_name = this.username;
+  this.last_name = this.role;
+},
   methods: {
     async signup() {
       try {
@@ -86,6 +93,8 @@ export default {
           this.username,
           this.password,
           this.email,
+          this.first_name,
+          this.last_name
         )
           .then((response) =>
             this.$emit("onAuth", { ...response.data, secret: this.password })
@@ -170,45 +179,5 @@ p{
   display: flex;
   align-items: center;
 }
-/* p {
-  color: #AB8E91;
-  font-weight: bold;
-}
-.signin {
-  backdrop-filter: blur(10px);
-  width: 500px;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  padding: 30px;
-  border-radius: 20px;
-  box-shadow:
-       inset 0 -1em 1em rgba(0,0,0,0.1),
-             0.1em 0.1em 1em rgba(0,0,0,0.3);
-  text-align: center;   
-  height: fit-content;        
-}
-.form__froup {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 10px;
-}
-.form__froup input {
-  border: none;
-  background: #485680;
-  border-radius: 15px;
-  padding: 15px;
-  color: #FFF;
-}
-
-.cloud__img {
-  position: fixed;
-  z-index: -1;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-} */
 </style>
   

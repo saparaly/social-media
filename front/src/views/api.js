@@ -10,9 +10,9 @@ const loginRest = async(username, secret) => {
     });
 };
 
-const signupRest = async(username, secret, email) => {
+const signupRest = async(username, secret, email, first_name, last_name) => {
     return await axios.post(
-        "https://api.chatengine.io/users/", { username, secret, email }, { headers: { "Private-Key": import.meta.env.VITE_CHAT_ENGINE_PRIVATE_KEY } }
+        "https://api.chatengine.io/users/", { username, secret, email, first_name, last_name }, { headers: { "Private-Key": import.meta.env.VITE_CHAT_ENGINE_PRIVATE_KEY } }
     );
 };
 

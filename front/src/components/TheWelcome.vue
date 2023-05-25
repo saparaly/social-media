@@ -3,7 +3,7 @@
 <div class="users__posts">
     <div class="container">
       <div class="users__posts-container">
-        <div class="left wow slideInLeft">
+        <div class="left">
         <div class="users">
           <p>recommended users:</p>
           <div class="user">
@@ -13,12 +13,31 @@
           </div>
           <p>search for user</p>
           <div class="group serch">
-            <input type="text" name="" id="">
+            <input type="text" v-model="searchTerm" list="userList">
+            <datalist id="userList">
+              <option v-for="user in filteredUsers" :value="user.username" :key="user.id"></option>
+            </datalist>
             <button>search</button>
           </div>
-          <div class="user">
-            <p>here you will see result</p>
+          
+          <div class="user"  >
+            <p v-if="!searchTerm">here you will see result</p>
+            <div v-if="searchTerm">
+              <div v-for="user in filteredUsers" :key="user.id">
+                <div class="username">@{{ user.username }} <span> {{ user.role }}</span></div>
+                <div class="username">{{ user.email }}</div>
+                <div class="follow click" @click.prevent="getFolloingUsers(user.followers, user.username)">
+                  followers:
+                  {{ user.followers && user.followers.length > 0 ? (user.followers[0] == 0 ? user.followers.length - 1 : user.followers.length) : 0 }}
+                </div>
+                <div class="follow click" @click.prevent="getFolloingUsers(user.following, user.username)">
+                  following:
+                  {{ user.following && user.following.length > 0 ? (user.following[0] == 0 ? user.following.length - 1 : user.following.length) : 0 }}
+                </div>
+              </div>
+            </div>
           </div>
+
         </div>
         <div class="users fit">
           <RouterLink to="/create-post">create post</RouterLink>
@@ -27,7 +46,7 @@
         </div>
         </div>
         <div class="posts" v-if="posts">
-            <div  class="post" v-for="post in posts" :key="post.id">
+            <div  class="post" v-for="post in filteredPosts" :key="post.id">
                 <div class="small">
                   created at {{ formatDate(post.created) }} by {{  post.postuserrole }} 
                   <RouterLink :to="'/user/' + post.userId" class="click">
@@ -80,32 +99,38 @@
         </div>
         <div class="right">
         <div class="filters">
-          <div>
-            <p>filter posts by popular tag</p>
+          <div v-if="repeatedTags.length > 0">
+            <p>Filter posts by popular tag</p>
             <div class="items">
-              <div class="group">aitu</div>
-              <div class="group">prototypes</div>
-              <div class="group">javascript</div>
-              <div class="group">golang</div>
-              <div class="group">typescript</div>
+              <div class="group" v-for="tag in repeatedTags" :key="tag">{{ tag }}</div>
             </div>
           </div>
 
           <div>
-            <p>search by tag</p>
+            <p>search post by tag</p>
             <div class="group serch">
-              <input type="text" name="" id="">
+              <input type="text"  v-model="searchTermTag" list="postList">
+              <datalist id="postList">
+                <option v-for="post in filteredPosts" :value="post.tags" :key="post.id"></option>
+              </datalist>
               <button>search</button>
             </div>
           </div>
 
           <div>
-            <p>filter post by date</p>
+            <p>filter posts by date</p>
             <div class="items">
-              <div class="group">lates</div>
-              <div class="group">oldest</div>
+              <div class="group">
+                <input type="radio" id="latest" value="latest" class="none" v-model="filterBy" @change="filterPosts">
+                <label for="latest">Latest</label>
+              </div>
+              <div class="group">
+                <input type="radio" id="oldest" value="oldest" class="none" v-model="filterBy" @change="filterPosts">
+                <label for="oldest">Oldest</label>
+              </div>
             </div>
           </div>
+
 
           <div>
             <p>filter post by star</p>
@@ -126,11 +151,46 @@ export default {
     data() {
         return {
             posts: [],
-            id: 0
-        }
+            id: 0,
+            searchTermTag: '',
+    searchTag: '',
+    filterBy: '', // add a new data property to store the filter option
+    repeatedTags: [],
+
+    //test
+    users: [],
+        userFollowing: [],
+        isFollowing: false,
+        followedUsers: [],
+        username: '',
+        searchTerm: '',
+            }
+    },
+    computed: {
+      filteredPosts() {
+      return this.posts
+        .filter(post =>
+          post.tags.some(tag => tag.toLowerCase().includes(this.searchTermTag.toLowerCase()))
+        );
+    },
+    filteredUsers() {
+    return this.users.filter(user => user.username.toLowerCase().includes(this.searchTerm.toLowerCase()));
+  }
     },
     async mounted() {
+      this.filterPosts();
       try {
+        const usersResponse = await axios.get(`http://localhost:8000/users`, {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      console.log(usersResponse.data, " users")
+      this.users = usersResponse.data.users;
+      this.currectUserId = usersResponse.data.id
+      this.currectUser = this.users.find(user => user.id === this.currectUserId);
+      // post
         const userResponse = await axios.get(`http://localhost:8000/home`, {
           withCredentials: true,
           headers: {
@@ -138,13 +198,56 @@ export default {
           }
         });
         this.posts = userResponse.data;
-        console.log(userResponse.data, " users")
+        console.log(userResponse.data, " post")
+          // Count the occurrence of each tag
+  const tagCounts = {};
+  this.posts.forEach(post => {
+    post.tags.forEach(tag => {
+      if (tagCounts[tag]) {
+        tagCounts[tag]++;
+      } else {
+        tagCounts[tag] = 1;
+      }
+    });
+  });
+  
+  // Filter out tags that repeat two or more times
+  this.repeatedTags = Object.keys(tagCounts).filter(tag => tagCounts[tag] >= 2);
+
       } catch (error) {
         console.log(error); 
         this.errorMessage = "Error loading users post";
       }
     },
     methods: {
+      filterPosts() {
+    let filteredPosts = this.posts;
+
+    if (this.filterBy === 'latest') {
+      filteredPosts.sort((a, b) => new Date(b.created) - new Date(a.created));
+    } else if (this.filterBy === 'oldest') {
+      filteredPosts.sort((a, b) => new Date(a.created) - new Date(b.created));
+    }
+
+    if (this.searchTag) {
+      const searchTerm = this.searchTag.toLowerCase().trim();
+      filteredPosts = filteredPosts.filter(post =>
+        post.tags.some(tag => tag.toLowerCase().includes(searchTerm))
+      );
+    }
+
+    this.filteredPosts = filteredPosts;
+  },
+  filterByTag(tag) {
+    this.searchTag = tag;
+    this.filterPosts();
+  },
+      search() {
+      // Perform the search action here
+      console.log('Search clicked');
+      console.log('Search term:', this.searchTermTag);
+      console.log('Filtered posts:', this.filteredPosts);
+    },
       async postReaction(action, postid,) {
         try {
           const response = await axios.post('http://localhost:8000/post-reaction', {
@@ -178,15 +281,18 @@ export default {
         const year = date.getFullYear().toString().slice(2);
         const hours = date.getHours().toString().padStart(2, '0');
         const minutes = date.getMinutes().toString().padStart(2, '0');
-        const seconds = date.getSeconds().toString().padStart(2, '0');
+        // const seconds = date.getSeconds().toString().padStart(2, '0');
 
-        return `${day}.${month}.${year} ${hours}:${minutes}:${seconds}`;
+        return `${day}.${month}.${year} ${hours}:${minutes}`;
       }
     }
 }
 </script>
 
 <style scoped>
+.none {
+  display: none;
+}
 
 .filters {
   display: flex;
@@ -423,6 +529,7 @@ border: 1px solid var(--text-color);
   display: flex;
   align-items: center;
   transition: all 0.15s ease;
+  gap: 5px;
 }
 .react button {
   width: 30px;

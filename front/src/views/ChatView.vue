@@ -1,10 +1,12 @@
 <template>
-    <div style="height: 100vh">
-      <PrettyChatWindow
-        :projectId="projectId"
-        :username="username"
-        :secret="secret"
-      />
+    <div style="height: 86vh">
+        <div v-if="username && secret" style="height: 100%">
+            <PrettyChatWindow
+                :projectId="projectId"
+                :username="username"
+                :secret="secret"
+            />
+        </div>
     </div>
   </template>
   
@@ -27,7 +29,6 @@ import axios from 'axios'
                 projectId: import.meta.env.VITE_CHAT_ENGINE_PROJECT_ID,
                 username: '',
                 secret: '',
-                user: {}
             }
         },
         components: {
@@ -41,13 +42,10 @@ import axios from 'axios'
                     'Content-Type': 'application/json'
                 }
                 });
-                console.log(response.data.user, 'chat');
-                this.user = response.data.user;
                 this.username = response.data.user.username
                 this.secret = response.data.user.password
             } catch (error) {
                 console.log(error);
-                this.errorMessage = 'Error loading users';
             }
         },
 

@@ -2,14 +2,17 @@
   <!-- <div class="space"></div> -->
   <div class="container">
     <div class="search">
-      <input type="text">
+      <input type="text" v-model="searchTerm" list="userList">
+      <datalist id="userList">
+        <option v-for="user in filteredUsers" :value="user.username" :key="user.id"></option>
+      </datalist>
       <button>search</button>
     </div>
+
     <div class="container__two">
       <div class="users">
         <p>{{ mes }}</p>
-        <div class="user" v-for="user in users" :key="user.id">
-
+        <div class="user" v-for="user in filteredUsers" :key="user.id">
           <div v-if="currectUser.following === null">
             <button @click="addUser(user.username)">follow</button>
           </div>
@@ -18,13 +21,8 @@
             <button v-else @click="addUser(user.username)">follow</button>
           </div>
 
-
           <div class="username">@{{ user.username }} <span> {{ user.role }}</span></div>
           <div class="username">{{ user.email }}</div>
-          <!-- <div class="username">
-            followers: {{ user.followers}}
-
-          </div> -->
           <div class="follow click" @click.prevent="getFolloingUsers(user.followers, user.username)">
             followers:
             {{ user.followers && user.followers.length > 0 ? (user.followers[0] == 0 ? user.followers.length - 1 : user.followers.length) : 0 }}
@@ -33,8 +31,6 @@
             following:
             {{ user.following && user.following.length > 0 ? (user.following[0] == 0 ? user.following.length - 1 : user.following.length) : 0 }}
           </div>
-
-
         </div>
       </div>
       <div class="list">
@@ -74,8 +70,14 @@ export default {
         isFollowing: false,
         followedUsers: [],
         username: '',
+        searchTerm: '',
       }
   },
+  computed: {
+  filteredUsers() {
+    return this.users.filter(user => user.username.toLowerCase().includes(this.searchTerm.toLowerCase()));
+  }
+},
   async mounted() {
     try {
       const usersResponse = await axios.get(`http://localhost:8000/users`, {
