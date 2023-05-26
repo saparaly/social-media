@@ -13,6 +13,10 @@
             <div class="error">{{ errorMess }}</div>
             <form action="">
               <div class="form__froup">
+                <input type="file" v-on:change="previewFile" name="img">
+                <div id="preview" v-html="previewContent"></div>
+              </div>
+              <div class="form__froup">
                 <input type="text" placeholder="role" name="role" v-model="role">
               </div>
               <div class="form__froup">
@@ -39,7 +43,6 @@
         <div class="img"><img src="../assets/img/Background.png" alt=""></div>
       </div>
     </div>
-
 </template>
 
 <script>
@@ -57,9 +60,12 @@ export default {
         password: '',
         confirmPassword: '',
         errorMess: '',
-        
+        img: '',
+
         first_name: "",
         last_name: "",
+        previewContent: '',
+
       }
     },
     mounted() {
@@ -67,9 +73,26 @@ export default {
   this.last_name = this.role;
 },
   methods: {
+    previewFile(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+            reader.addEventListener('load', () => {
+                const fileType = file.type.split('/')[0];
+                if (fileType === 'image') {
+                    this.previewContent = `<img src="${reader.result}" alt="preview">`;
+                } else if (fileType === 'video') {
+                    this.previewContent = `<video src="${reader.result}" controls></video>`;
+                } else {
+                    this.previewContent = '<p>Invalid file type.</p>';
+                }
+                this.img = reader.result; 
+            });
+            reader.readAsDataURL(file);
+        },
     async signup() {
       try {
         const response = await axios.post('http://localhost:8000/signup', {
+          avaimg: this.img,
           role: this.role,
           username: this.username,
           email: this.email,
@@ -93,8 +116,8 @@ export default {
           this.username,
           this.password,
           this.email,
-          this.first_name,
-          this.last_name
+          this.username,
+          this.role
         )
           .then((response) =>
             this.$emit("onAuth", { ...response.data, secret: this.password })
@@ -119,6 +142,7 @@ export default {
   margin-bottom: 20px;
 }
 .form__froup input {
+  width: 100%;
   border: 1px solid #676767;
   border-radius: 10px;
   padding: 10px 20px;

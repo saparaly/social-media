@@ -20,7 +20,9 @@
             <button v-if="currectUser.following.includes(user.id)" @click="removeUser(user.username)">unfollow</button>
             <button v-else @click="addUser(user.username)">follow</button>
           </div>
-
+<div class="ava">
+  <img :src="user.avaimg" alt="">
+</div>
           <div class="username">@{{ user.username }} <span> {{ user.role }}</span></div>
           <div class="username">{{ user.email }}</div>
           <div class="follow click" @click.prevent="getFolloingUsers(user.followers, user.username)">
@@ -86,7 +88,7 @@ export default {
           'Content-Type': 'application/json'
         }
       });
-      console.log(usersResponse.data, " users")
+      console.log(usersResponse.data.users, " users test")
       this.users = usersResponse.data.users;
       this.currectUserId = usersResponse.data.id
       this.currectUser = this.users.find(user => user.id === this.currectUserId);
@@ -167,6 +169,17 @@ export default {
 </script>
 
 <style scoped>
+.ava {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+.ava img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
 .list li {
   color: #38416f;
   background: #fff;

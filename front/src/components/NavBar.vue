@@ -4,19 +4,14 @@
   <div :class="['bg', { 'hidden': shouldHideBackground }]"></div>
     <div class="container">
     <div class="nav__container">
-      <a href="/" class="logo">
-      AITUSTACK
-      </a>
+      <RouterLink to="/" class="logo">AITUSTACK</RouterLink>
       <div v-if="isAuthenticated">
-      <RouterLink to="/" exact-active-class="active">Home</RouterLink>
+        <RouterLink to="/" exact-active-class="active">Home</RouterLink>
         <RouterLink to="/users" exact-active-class="active">Users</RouterLink>
-          <RouterLink to="/userProf" exact-active-class="active">Profile</RouterLink>
-          <RouterLink to="/chat">Chat</RouterLink>
-          <RouterLink class="last" to="/logout" @click.prevent="logout">Logout</RouterLink>
-        <!-- <RouterLink to="/create-post">create post</RouterLink> -->
-          <!-- <RouterLink to="/todos">todos</RouterLink>
-          <RouterLink to="/post/">my post</RouterLink> -->
-        </div>
+        <RouterLink to="/userProf" exact-active-class="active">Profile</RouterLink>
+        <RouterLink to="/chat">Chat</RouterLink>
+        <RouterLink class="last" to="/logout" @click.prevent="logout">Logout</RouterLink>
+      </div>
 
         <div v-else>
           <RouterLink to="/signup" exact-active-class="active">Signup</RouterLink>

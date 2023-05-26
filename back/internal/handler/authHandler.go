@@ -52,6 +52,7 @@ func (h *Handler) singUp(w http.ResponseWriter, r *http.Request) {
 	}
 
 	user := &models.User{
+		Img:      getUser["avaimg"],
 		Username: getUser["username"],
 		Email:    getUser["email"],
 		Password: getUser["password"],

@@ -25,8 +25,8 @@ type Authorization interface {
 
 func (r *AuthRepo) CreateUser(user models.User) (int, error) {
 	var id int
-	query := fmt.Sprintf("INSERT INTO users (role, username, email, password) VALUES (?, ?, ?, ?) RETURNING id")
-	row := r.db.QueryRow(query, user.Role, user.Username, user.Email, user.Password)
+	query := fmt.Sprintf("INSERT INTO users (img, role, username, email, password) VALUES (?,?, ?, ?, ?) RETURNING id")
+	row := r.db.QueryRow(query, user.Img, user.Role, user.Username, user.Email, user.Password)
 	if err := row.Scan(&id); err != nil {
 		return 0, err
 	}

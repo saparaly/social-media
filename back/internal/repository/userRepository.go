@@ -31,7 +31,7 @@ type User interface {
 }
 
 func (r *UserRepo) GetUsers() ([]models.User, error) {
-	rows, err := r.db.Query("SELECT id, username, email, password, role, followers, following FROM users")
+	rows, err := r.db.Query("SELECT id,img,  username, email, password, role, followers, following FROM users")
 	if err != nil {
 		return nil, err
 	}
@@ -41,7 +41,7 @@ func (r *UserRepo) GetUsers() ([]models.User, error) {
 	for rows.Next() {
 		var user models.User
 		var followers, following sql.NullString
-		if err := rows.Scan(&user.Id, &user.Username, &user.Email, &user.Password, &user.Role, &followers, &following); err != nil {
+		if err := rows.Scan(&user.Id, &user.Img, &user.Username, &user.Email, &user.Password, &user.Role, &followers, &following); err != nil {
 			return nil, err
 		}
 		if followers.Valid {
@@ -83,7 +83,7 @@ func (r *UserRepo) GetUserIdByUsername(username string) (int, error) {
 func (r *UserRepo) GetUserById(id int) (models.User, error) {
 	var user models.User
 	var followers, following sql.NullString
-	err := r.db.QueryRow("SELECT id, username, email, password, role, followers, following FROM users WHERE id = $1", id).Scan(&user.Id, &user.Username, &user.Email, &user.Password, &user.Role, &followers, &following)
+	err := r.db.QueryRow("SELECT id,img, username, email, password, role, followers, following FROM users WHERE id = $1", id).Scan(&user.Id, &user.Img, &user.Username, &user.Email, &user.Password, &user.Role, &followers, &following)
 	if err != nil {
 		return models.User{}, err
 	}
